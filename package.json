@@ -1,22 +1,29 @@
 {
-  "name": "sso_backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "jwt-rest-api",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "NODE_ENV=Development nodemon  ./bin/www"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/franfares10/SingleSignOn-Backend.git"
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^3.5.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "http-errors": "^1.7.3",
+    "jade": "~1.11.0",
+    "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.13.7",
+    "mongoose-paginate": "^5.0.3",
+    "morgan": "~1.9.0",
+    "nodemon": "^2.0.12"
+  },
+  "description": "### Prerequisites",
+  "main": "app.js",
+  "bin": {
+    "jwt-rest-api": "app.js"
   },
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/franfares10/SingleSignOn-Backend/issues"
-  },
-  "homepage": "https://github.com/franfares10/SingleSignOn-Backend#readme",
-  "dependencies": {
-    "express": "^4.17.1"
-  }
+  "license": "ISC"
 }
