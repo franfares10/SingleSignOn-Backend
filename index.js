@@ -15,8 +15,6 @@ app.use(cors());
 app.use(express.static('public'));
 // Request's Body parsing
 app.use(express.json({ limit: '50mb' }));
-//app.use(formData.parse({uploadDir:os.tmpdir(),autoClean:true}))
-//app.use(formData.union())
 
 
 // Default GET method
