@@ -1,3 +1,59 @@
+var {
+    checkCredentials,
+    checkTenantInfo
+} = require('./services/user.service');
+var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+
+
+//Metodo para realizar el login desde el endpoint
+const External_login = async function (req, res, next) {
+    const {
+        email,
+        password,
+        tenant
+    } = req.body;
+    var Credentials = {
+        email,
+        password
+    }
+
+    try {
+        var isUserRegistered = await checkCredentials(Credentials);
+        if (isUserRegistered) {
+            //Aca llamariamos al tenant
+            var TenantInfo = await checkTenantInfo(tenant);
+            var User = await getUser(email,tenant);
+            const token = await jwt.sign(User,TenantInfo.jwt_secret,{expiresIn:"24h"});
+            return res.status(200).json({
+                status:200,
+                token,
+                message: "Token created successfully"
+            });
+
+        } else {
+            return res.status(400).json({
+                status: 400,
+                data: isUserRegistered,
+                message: "Couldn´t find credentials"
+            });
+        }
+    } catch (e) {
+        return res.status(500).json({
+            status: 500,
+            message: e.message
+        });
+    }
+}
+
+module.exports = {
+    checkCredentials
+}
+
+
+
+
+/*
 var UserService = require('../services/user.service');
 
 // Saving the context of this module inside the _the variable
@@ -86,6 +142,4 @@ exports.loginUser = async function (req, res, next) {
         //Return an Error Response Message with Code and the Error Message.
         return res.status(400).json({status: 400, message: "Invalid username or password"})
     }
-}
-    
-    
+}*/

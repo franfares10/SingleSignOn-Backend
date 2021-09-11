@@ -1,8 +1,60 @@
-// Gettign the Newly created Mongoose Model we just created 
-var User = require('../models/User.model');
+var Credentials = require('../models/Credentials.model');
+var Tenant = require('../models/Tenant.model');
+var CMS = require('../models/Cms.model');
+var Facturacion = require('../models/Facturacion.model');
+var Mobile = require('../models/Mobile.model');
+var Suscripciones = require('../models/Suscripciones.model');
+var Web = require('../models/Web.model');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
+const checkCredentials = async function (credentials) {
+
+    var user = await Credentials.findOne({
+        email: credentials.email
+    });
+    if (credentials.password == user.password) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const checkTenantInfo = async function (tenant){
+
+    var TenantInfo = await Tenant.findOne({name:tenant});
+    return TenantInfo;
+
+}
+
+const getUser = async function(email,tenant){
+    switch(tenant){
+        case 'cms':
+            var user = await CMS.findOne(email);
+            return user;
+        case 'facturacion':
+            var user = await Facturacion.findOne(email);
+            return user;
+        case 'mobile':
+            var user = await Mobile.findOne(email);
+            return user;
+        case 'suscripciones':
+            var user = await Suscripciones.findOne(email);
+            return user;
+        case 'web':
+            var user = await Web.findOne(email);
+            return user;
+    }
+}
+
+module.exports = {
+    checkCredentials,
+    checkTenantInfo,
+    getUser
+}
+
+
+/*
 // Saving the context of this module inside the _the variable
 _this = this
 
@@ -115,4 +167,4 @@ exports.loginUser = async function (user) {
         throw Error("Error while Login User")
     }
 
-}
+}*/
