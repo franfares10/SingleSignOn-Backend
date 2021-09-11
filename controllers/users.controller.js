@@ -1,7 +1,7 @@
 var {
     checkCredentials,
     checkTenantInfo
-} = require('./services/user.service');
+} = require('../services/user.service');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
@@ -47,7 +47,7 @@ const External_login = async function (req, res, next) {
 }
 
 module.exports = {
-    checkCredentials
+    External_login
 }
 
 

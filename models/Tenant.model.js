@@ -5,7 +5,7 @@ var TenantSchema = new mongoose.Schema({
     name: String,
     jwt_secret: String,
     redirectUrl: {
-        type: string,
+        type: String,
         required: false
     }
 })
