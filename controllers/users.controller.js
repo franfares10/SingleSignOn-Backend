@@ -25,6 +25,7 @@ const External_login = async function (req, res, next) {
             var TenantInfo = await checkTenantInfo(tenant);
             var User = await getUser(email,tenant);
             const token = await jwt.sign(User.toJSON(),TenantInfo.jwt_secret,{expiresIn:'1d'});
+            console.log("06- Termina el crear Token")
             return res.status(200).json({
                 status:200,
                 token,
