@@ -1,21 +1,31 @@
-# To run
+# Aplicaciones Distribuidas Backend
 
-npm audit fix 
-npm fund 
-nodemon app.js     
+Web server built in Node.js for the backend of the Distributed Applications project (UADE 2021).
 
-# Example
+## Heroku cloud deployed version
 
-http://localhost:4000/api/users/registration
+If you want to view the project without having to install it locally, you can access the version deployed in Heroku [clicking here!](https://distribuidas-backend.herokuapp.com/)
 
-body
+## Installation and local deployment
 
-name
-email
-password
+Use the [node package manager](https://www.npmjs.com/) commands after clone the repository to install all the necessary dependencies to run the project locally.
 
-http://localhost:4000/api/users/
+```bash
+npm install
+```
 
-header
+Once the dependencies are installed, use this command to run the server on the default 3002 port.
 
-x-access-token
+```bash
+npm run start
+```
+
+
+## Authors
+- Lautaro Mitelman
+- Valentin Saettone
+- Francisco Fares
+- Iván Ponce
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
