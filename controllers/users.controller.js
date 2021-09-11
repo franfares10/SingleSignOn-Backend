@@ -1,6 +1,7 @@
 var {
     checkCredentials,
-    checkTenantInfo
+    checkTenantInfo,
+    getUser
 } = require('../services/user.service');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
@@ -8,23 +9,22 @@ var jwt = require('jsonwebtoken');
 
 //Metodo para realizar el login desde el endpoint
 const External_login = async function (req, res, next) {
+    console.log("Request: "+req.body)
     const {
         email,
         password,
         tenant
     } = req.body;
-    var Credentials = {
-        email,
-        password
-    }
 
     try {
-        var isUserRegistered = await checkCredentials(Credentials);
+        console.log("01- Comienza el proceso de validacion")
+        var isUserRegistered = await checkCredentials(email,password);
+        console.log(isUserRegistered)
         if (isUserRegistered) {
-            //Aca llamariamos al tenant
+            console.log("03- User validado, busca info del tenant")
             var TenantInfo = await checkTenantInfo(tenant);
             var User = await getUser(email,tenant);
-            const token = await jwt.sign(User,TenantInfo.jwt_secret,{expiresIn:"24h"});
+            const token = await jwt.sign(User.toJSON(),TenantInfo.jwt_secret,{expiresIn:'1d'});
             return res.status(200).json({
                 status:200,
                 token,

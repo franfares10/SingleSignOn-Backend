@@ -8,12 +8,10 @@ var Web = require('../models/Web.model');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
-const checkCredentials = async function (credentials) {
-
-    var user = await Credentials.findOne({
-        email: credentials.email
-    });
-    if (credentials.password == user.password) {
+const checkCredentials = async function (email,password) {
+    console.log("02- Busca las credenciales del usuario")
+    var user = await Credentials.find({email})
+    if (password === user[0].password) {
         return true;
     } else {
         return false;
@@ -21,29 +19,30 @@ const checkCredentials = async function (credentials) {
 }
 
 const checkTenantInfo = async function (tenant){
-
-    var TenantInfo = await Tenant.findOne({name:tenant});
-    return TenantInfo;
+    console.log("04- Informacion del tenant de la base")
+    var TenantInfo = await Tenant.find({name:tenant});
+    return TenantInfo[0];
 
 }
 
 const getUser = async function(email,tenant){
+    console.log("05- Buscando informacion correspondiente al user y tenant")
     switch(tenant){
         case 'cms':
-            var user = await CMS.findOne(email);
-            return user;
+            var user = await CMS.find({email});
+            return user[0];
         case 'facturacion':
-            var user = await Facturacion.findOne(email);
-            return user;
+            var user = await Facturacion.find({email});
+            return user[0];
         case 'mobile':
-            var user = await Mobile.findOne(email);
-            return user;
+            var user = await Mobile.find({email});
+            return user[0];
         case 'suscripciones':
-            var user = await Suscripciones.findOne(email);
-            return user;
+            var user = await Suscripciones.find({email});
+            return user[0];
         case 'web':
-            var user = await Web.findOne(email);
-            return user;
+            var user = await Web.find({email});
+            return user[0];
     }
 }
 
