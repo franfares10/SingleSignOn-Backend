@@ -14,23 +14,23 @@ const externalLogin = async function (req, res) {
             const tenantInfo = await tenantService.getTenantInfo();
             const { jwt_secret } = tenantInfo;
             const user = await tenantService.getUserFromTenant(email);
-            console.log(user)
             const token = jwt.sign(user.toJSON(), jwt_secret, { expiresIn: '1d' });
             return res.status(200).json({
                 status: 200,
                 token,
-                message: "Token created successfully."
+                message: 'Token created successfully.'
             });
         } else {
             return res.status(401).json({
                 status: 404,
-                message: "Unauthorized."
+                message: 'Unauthorized.'
             });
         }
-    } catch (e) {
+    } catch (err) {
+        console.log(err);
         return res.status(500).json({
             status: 500,
-            message: e.message
+            message: 'Internal Server Error.'
         });
     }
 }
