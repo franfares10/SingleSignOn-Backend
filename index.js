@@ -5,14 +5,16 @@ const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 swaggerDocument = require('./swagger.json');
 const { dbConnection } = require('./database/config');
+
 // Database
 dbConnection();
+
 // Express
 const app = express();
 
 // CORS & Environment
 app.use(cors());
-app.use(express.static('public'));
+
 // Request's Body parsing
 app.use(express.json({ limit: '50mb' }));
 
