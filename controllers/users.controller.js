@@ -1,48 +1,36 @@
-var {
-    checkCredentials,
-    checkTenantInfo,
-    getUser
-} = require('../services/user.service');
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
+const TenantService = require('../services/tenant.service');
+const CredentialService = require('../services/credential.service');
+const jwt = require('jsonwebtoken');
 
 
 //Metodo para realizar el login desde el endpoint
-const External_login = async function (req, res, next) {
-    console.log("Request: "+req.body)
-    const {
-        email,
-        password,
-        tenant
-    } = req.body;
-
+const externalLogin = async function (req, res) {
+    const { email, password, tenant } = req.body;
     try {
-        console.log("01- Comienza el proceso de validacion")
-        var isUserRegistered = await checkCredentials(email,password);
-        console.log(isUserRegistered)
-        if (isUserRegistered) {
-            console.log("03- User validado, busca info del tenant")
-            var TenantInfo = await checkTenantInfo(tenant);
-            var User = await getUser(email,tenant);
-            const token = await jwt.sign(User.toJSON(),TenantInfo.jwt_secret,{expiresIn:'1d'});
-            console.log("06- Termina el crear Token")
+        const credentialService = new CredentialService();
+        const isValidCredentials = await credentialService.isValidCredentials(email, password);
+        if (isValidCredentials) {
+            const tenantService = new TenantService(tenant);
+            const tenantInfo = await tenantService.getTenantInfo();
+            const { jwt_secret } = tenantInfo;
+            const user = await tenantService.getUserFromTenant(email);
+            const token = jwt.sign(user.toJSON(), jwt_secret, { expiresIn: '1d' });
             return res.status(200).json({
-                status:200,
+                status: 200,
                 token,
-                message: "Token created successfully"
+                message: 'Token created successfully.'
             });
-
         } else {
-            return res.status(400).json({
-                status: 400,
-                data: isUserRegistered,
-                message: "Couldn´t find credentials"
+            return res.status(401).json({
+                status: 404,
+                message: 'Unauthorized.'
             });
         }
-    } catch (e) {
+    } catch (err) {
+        console.log(err);
         return res.status(500).json({
             status: 500,
-            message: e.message
+            message: 'Internal Server Error.'
         });
     }
 }
@@ -78,7 +66,7 @@ const registerUser = async function(req,res){
 }
 
 module.exports = {
-    External_login,
+    externalLogin,
     registerUser
 }
 

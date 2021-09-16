@@ -5,7 +5,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
-const {External_login} = require('../controllers/users.controller')
+const { externalLogin } = require('../controllers/users.controller')
 const router = Router();
 
 router.post('/login',
@@ -15,7 +15,7 @@ router.post('/login',
         check('tenant').not().isEmpty(),
         validarCampos
     ],
-   External_login
+    externalLogin
 );
 
 /*

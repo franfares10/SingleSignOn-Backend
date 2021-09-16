@@ -1,6 +1,7 @@
-# Aplicaciones Distribuidas Backend
+# Single Sign On - Backend
 
-Web server built in Node.js for the backend of the Distributed Applications project (UADE 2021).
+Web server built in Node.js with Express.js for the backend of the Application Integration project (UADE 2021). This backend allows you to log in and register users. Using the JWT protocol to generate the user tokens.
+![image](https://miro.medium.com/max/2000/1*YsFDKm7rl77RLGf3m9WytA.png)
 
 ## Heroku cloud deployed version
 
@@ -20,12 +21,24 @@ Once the dependencies are installed, use this command to run the server on the d
 npm run start
 ```
 
+## MongoDB Database
+Our database is implemented using MongoDB, a NoSQL database system. It is deployed in [Mongo Atlas](https://www.mongodb.com/cloud/atlas), a global cloud database service for modern applications.
+To access it you can use [Mongo Compass](https://www.mongodb.com/products/compass), the GUI for MongoDB.
+We provide you with the following connection string to access the records and collections of the database with read-only permission through Mongo Compass:
+```bash
+mongodb+srv://readOnly:readOnly@cluster0.iafee.mongodb.net/appInteractivasDataBase
+```
 
 ## Authors
 - Lautaro Mitelman
 - Valentin Saettone
 - Francisco Fares
 - Iván Ponce
+- Marco Mercurio
+- Julian Armagno
+- Lucas Rial
+- Nicolas Gaido
+- Cristhian Apolitano 
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
