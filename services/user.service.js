@@ -28,7 +28,7 @@ const createUser = async function (user) {
     try {
 
         var isUserRegistered = await checkEmail(user.email);
-        var isUserRegisteredInTenant = await checkEmailTenant(user.email,user.tenant);
+        var isUserRegisteredInTenant = await checkEmailTenant(user.email, user.tenant);
 
         if (!isUserRegistered) { //if not registered --> we must create the user in both Collections (Credentials && Specified Tenant)
 
@@ -43,12 +43,11 @@ const createUser = async function (user) {
             return savedUserInTenant;
         } else {
             if (!isUserRegisteredInTenant) { //if registered in credentials && not registered in the specified tenant --> we must create the user in the Tenant Collection
-                
+
                 var savedUserInTenant = await registerUserInTenant(tenantUser);
                 return savedUserInTenant;
 
             } else { //The user is registered in both Tenant and Credentials Collection
-                console.log("User already registered!");
                 throw Error("User already registered!");
             }
         }
@@ -109,14 +108,10 @@ const checkCredentials = async function (email, password) {
 
 const checkEmail = async function (email) {
     console.log("02- Busca las credenciales del usuario")
-    var user = await Credentials.find({
+    var isEmailRegistered = await Credentials.exists({
         email
     })
-    if (user.email != null) {
-        return true;
-    } else {
-        return false;
-    }
+    return isEmailRegistered;
 }
 
 const checkTenantInfo = async function (tenant) {
