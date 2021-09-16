@@ -8,10 +8,48 @@ var Web = require('../models/Web.model');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
+
+const createUser = async function (user) {
+    // Creating a new Mongoose Object by using the new keyword
+
+    try {
+
+        var isUserRegistered = await checkEmail(user.email);
+        if(!isUserRegistered){
+            var newUser = new Credentials(user);
+             // Saving the User 
+            var savedUser = await newUser.save();
+            var token = jwt.sign({
+                id: savedUser._id
+            }, process.env.SECRET, {
+                expiresIn: 86400 // expires in 24 hours
+            });
+            return token;
+        }
+
+       
+    } catch (e) {
+        // return a Error message describing the reason 
+        console.log(e)    
+        throw Error("Error while Creating User")
+    }
+}
+
+
 const checkCredentials = async function (email,password) {
     console.log("02- Busca las credenciales del usuario")
     var user = await Credentials.find({email})
     if (password === user[0].password) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const checkEmail = async function (email) {
+    console.log("02- Busca las credenciales del usuario")
+    var user = await Credentials.find({email})
+    if (user.email != null) {
         return true;
     } else {
         return false;
@@ -49,7 +87,8 @@ const getUser = async function(email,tenant){
 module.exports = {
     checkCredentials,
     checkTenantInfo,
-    getUser
+    getUser,
+    createUser
 }
 
 

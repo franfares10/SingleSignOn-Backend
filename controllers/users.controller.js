@@ -47,8 +47,39 @@ const External_login = async function (req, res, next) {
     }
 }
 
+const registerUser = async function(req,res){
+    const {
+        email,
+        password,
+        tenant,
+        name,
+        last_name,
+        admin
+    } = req.body;
+
+    const User = {
+        email,
+        password,
+        tenant,
+        name,
+        last_name,
+        admin
+    }
+
+ try {
+     // Calling the Service function with the new object from the Request Body
+     var createdUser = await UserService.createUser(User)
+     return res.status(201).json({token: createdUser, message: "Succesfully Created User"})
+ } catch (e) {
+     //Return an Error Response Message with Code and the Error Message.
+     console.log(e)
+     return res.status(400).json({status: 400, message: "User Creation was Unsuccesfull"})
+ }
+}
+
 module.exports = {
-    External_login
+    External_login,
+    registerUser
 }
 
 
