@@ -12,33 +12,94 @@ var jwt = require('jsonwebtoken');
 const createUser = async function (user) {
     // Creating a new Mongoose Object by using the new keyword
 
+    const credentials = {
+        email: user.email,
+        password: bcrypt.hashSync(user.password, bcrypt.genSaltSync(8))
+    }
+
+    const tenantUser = {
+        email: user.email,
+        tenant: user.tenant,
+        name: user.name,
+        last_name: user.last_name,
+        admin: user.admin
+    }
+
     try {
 
         var isUserRegistered = await checkEmail(user.email);
-        if(!isUserRegistered){
-            var newUser = new Credentials(user);
-             // Saving the User 
-            var savedUser = await newUser.save();
-            var token = jwt.sign({
-                id: savedUser._id
-            }, process.env.SECRET, {
-                expiresIn: 86400 // expires in 24 hours
-            });
-            return token;
+        var isUserRegisteredInTenant = await checkEmailTenant(user.email,user.tenant);
+
+        if (!isUserRegistered) { //if not registered --> we must create the user in both Collections (Credentials && Specified Tenant)
+
+            //Creating a new Credentials instance
+            var newCredentialsUser = new Credentials(credentials);
+            // Saving the User in Credentials Collection
+            var savedUserInCredentials = await newCredentialsUser.save();
+
+            //method to register the user in the correct tenant
+            var savedUserInTenant = await registerUserInTenant(tenantUser);
+
+            return savedUserInTenant;
+        } else {
+            if (!isUserRegisteredInTenant) { //if registered in credentials && not registered in the specified tenant --> we must create the user in the Tenant Collection
+                
+                var savedUserInTenant = await registerUserInTenant(tenantUser);
+                return savedUserInTenant;
+
+            } else { //The user is registered in both Tenant and Credentials Collection
+                console.log("User already registered!");
+                throw Error("User already registered!");
+            }
         }
 
-       
+
     } catch (e) {
         // return a Error message describing the reason 
-        console.log(e)    
-        throw Error("Error while Creating User")
+        console.log(e)
+        throw Error(e.message)
     }
 }
 
 
-const checkCredentials = async function (email,password) {
+
+//I´ve made this method apart from 'createUser' but check if it´s OK or refactor it.
+const registerUserInTenant = async function (user) {
+    try {
+        switch (user.tenant) {
+            case 'cms':
+                var newUser = new CMS(user);
+                var savedUser = await newUser.save();
+                return savedUser;
+            case 'facturacion':
+                var newUser = new Facturacion(user);
+                var savedUser = await newUser.save();
+                return savedUser;
+            case 'mobile':
+                var newUser = new Mobile(user);
+                var savedUser = await newUser.save();
+                return savedUser;
+            case 'suscripciones':
+                var newUser = new Suscripciones(user);
+                var savedUser = await newUser.save();
+                return savedUser;
+            case 'web':
+                var newUser = new Web(user);
+                var savedUser = await newUser.save();
+                return savedUser;
+        }
+    } catch (e) {
+        console.log(e);
+        throw Error("Error while creating tenant user")
+    }
+}
+
+
+const checkCredentials = async function (email, password) {
     console.log("02- Busca las credenciales del usuario")
-    var user = await Credentials.find({email})
+    var user = await Credentials.find({
+        email
+    })
     if (password === user[0].password) {
         return true;
     } else {
@@ -48,7 +109,9 @@ const checkCredentials = async function (email,password) {
 
 const checkEmail = async function (email) {
     console.log("02- Busca las credenciales del usuario")
-    var user = await Credentials.find({email})
+    var user = await Credentials.find({
+        email
+    })
     if (user.email != null) {
         return true;
     } else {
@@ -56,30 +119,75 @@ const checkEmail = async function (email) {
     }
 }
 
-const checkTenantInfo = async function (tenant){
+const checkTenantInfo = async function (tenant) {
     console.log("04- Informacion del tenant de la base")
-    var TenantInfo = await Tenant.find({name:tenant});
+    var TenantInfo = await Tenant.find({
+        name: tenant
+    });
     return TenantInfo[0];
 
 }
 
-const getUser = async function(email,tenant){
-    console.log("05- Buscando informacion correspondiente al user y tenant")
-    switch(tenant){
+//Almost equal to 'getUser' method, refactor this
+//CORREGIR EL EXIST NO FUNCA
+const checkEmailTenant = async function (email, tenant) {
+
+    switch (tenant) {
         case 'cms':
-            var user = await CMS.find({email});
+            var isUserRegistered = await CMS.exists({
+                email
+            });
+            return isUserRegistered;
+        case 'facturacion':
+            var isUserRegistered = await Facturacion.exists({
+                email
+            });
+            return isUserRegistered;
+        case 'mobile':
+            var isUserRegistered = await Mobile.exists({
+                email
+            });
+            return isUserRegistered;
+        case 'suscripciones':
+            var isUserRegistered = await Suscripciones.exists({
+                email
+            });
+            return isUserRegistered;
+        case 'web':
+            var isUserRegistered = await Web.exists({
+                email
+            });
+            return isUserRegistered;
+    }
+}
+
+const getUser = async function (email, tenant) {
+    console.log("05- Buscando informacion correspondiente al user y tenant")
+    switch (tenant) {
+        case 'cms':
+            var user = await CMS.find({
+                email
+            });
             return user[0];
         case 'facturacion':
-            var user = await Facturacion.find({email});
+            var user = await Facturacion.find({
+                email
+            });
             return user[0];
         case 'mobile':
-            var user = await Mobile.find({email});
+            var user = await Mobile.find({
+                email
+            });
             return user[0];
         case 'suscripciones':
-            var user = await Suscripciones.find({email});
+            var user = await Suscripciones.find({
+                email
+            });
             return user[0];
         case 'web':
-            var user = await Web.find({email});
+            var user = await Web.find({
+                email
+            });
             return user[0];
     }
 }

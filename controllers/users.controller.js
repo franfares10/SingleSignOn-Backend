@@ -1,7 +1,7 @@
 const TenantService = require('../services/tenant.service');
 const CredentialService = require('../services/credential.service');
 const jwt = require('jsonwebtoken');
-
+const UserService = require('../services/user.service');
 
 //Metodo para realizar el login desde el endpoint
 const externalLogin = async function (req, res) {
@@ -57,11 +57,11 @@ const registerUser = async function(req,res){
  try {
      // Calling the Service function with the new object from the Request Body
      var createdUser = await UserService.createUser(User)
-     return res.status(201).json({token: createdUser, message: "Succesfully Created User"})
+     return res.status(201).json({user: createdUser, message: "Succesfully Created User"})
  } catch (e) {
      //Return an Error Response Message with Code and the Error Message.
      console.log(e)
-     return res.status(400).json({status: 400, message: "User Creation was Unsuccesfull"})
+     return res.status(400).json({status: 400, message: e.message})
  }
 }
 
