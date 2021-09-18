@@ -5,6 +5,6 @@ var CredentialSchema = new mongoose.Schema({
     password:String
 })
 
-const Credentials = mongoose.model('credentials',CredentialSchema);
+const Credentials = mongoose.model('credentials',CredentialSchema, 'credentials');
 
 module.exports = Credentials;

@@ -8,6 +8,6 @@ var CmsSchema = new mongoose.Schema({
     admin: Boolean
 })
 
-var CMS = mongoose.model('cms',CmsSchema);
+var CMS = mongoose.model('cms', CmsSchema, 'cms');
 
 module.exports = CMS;

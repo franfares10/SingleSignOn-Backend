@@ -22,7 +22,7 @@ const externalLogin = async function (req, res) {
             });
         } else {
             return res.status(401).json({
-                status: 404,
+                status: 401,
                 message: 'Unauthorized.'
             });
         }

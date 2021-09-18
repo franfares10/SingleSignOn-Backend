@@ -6,15 +6,14 @@ var Mobile = require('../models/Mobile.model');
 var Suscripciones = require('../models/Suscripciones.model');
 var Web = require('../models/Web.model');
 var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
+const { SALT } = require('../constants/constants');
 
 
 const createUser = async function (user) {
     // Creating a new Mongoose Object by using the new keyword
-
     const credentials = {
         email: user.email,
-        password: bcrypt.hashSync(user.password, bcrypt.genSaltSync(8))
+        password: bcrypt.hashSync(user.password, SALT)
     }
 
     const tenantUser = {

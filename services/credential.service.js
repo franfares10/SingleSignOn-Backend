@@ -1,4 +1,6 @@
 const Credentials = require('../models/Credentials.model');
+var bcrypt = require('bcryptjs');
+const { SALT } = require('../constants/constants');
 
 class CredentialService {
     constructor() {
@@ -6,9 +8,10 @@ class CredentialService {
     }
 
     async isValidCredentials(email, password) {
+        const hashedPassword = await bcrypt.hash(password, SALT);
         const user = await Credentials.find({ email });
         if (user[0]) {
-            if (password === user[0].password) {
+            if (hashedPassword === user[0].password) {
                 return true;
             } else {
                 return false;

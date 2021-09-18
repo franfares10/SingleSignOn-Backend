@@ -10,6 +10,6 @@ var TenantSchema = new mongoose.Schema({
     }
 })
 
-var Tenant = mongoose.model('tenant',TenantSchema);
+var Tenant = mongoose.model('tenant', TenantSchema, 'tenants');
 
 module.exports = Tenant;
