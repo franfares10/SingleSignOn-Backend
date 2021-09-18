@@ -93,18 +93,6 @@ const registerUserInTenant = async function (user) {
 }
 
 
-const checkCredentials = async function (email, password) {
-    console.log("02- Busca las credenciales del usuario")
-    var user = await Credentials.find({
-        email
-    })
-    if (password === user[0].password) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 const checkEmail = async function (email) {
     console.log("02- Busca las credenciales del usuario")
     var isEmailRegistered = await Credentials.exists({
@@ -125,7 +113,6 @@ const checkTenantInfo = async function (tenant) {
 //Almost equal to 'getUser' method, refactor this
 //CORREGIR EL EXIST NO FUNCA
 const checkEmailTenant = async function (email, tenant) {
-
     switch (tenant) {
         case 'cms':
             var isUserRegistered = await CMS.exists({
@@ -187,7 +174,6 @@ const getUser = async function (email, tenant) {
 }
 
 module.exports = {
-    checkCredentials,
     checkTenantInfo,
     getUser,
     createUser
