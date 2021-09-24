@@ -65,9 +65,13 @@ const createUser = async function (user) {
 //I´ve made this method apart from 'createUser' but check if it´s OK or refactor it.
 const registerUserInTenant = async function (user) {
     try {
+        var tenant = user.tenant;
+        console.log(tenant)
+    
         switch (user.tenant) {
             case 'cms':
                 var newUser = new CMS(user);
+                console.log(newUser);
                 var savedUser = await newUser.save();
                 return savedUser;
             case 'facturacion':
@@ -124,7 +128,6 @@ const checkTenantInfo = async function (tenant) {
 }
 
 //Almost equal to 'getUser' method, refactor this
-//CORREGIR EL EXIST NO FUNCA
 const checkEmailTenant = async function (email, tenant) {
 
     switch (tenant) {
