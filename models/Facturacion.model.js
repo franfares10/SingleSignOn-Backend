@@ -8,6 +8,6 @@ var FacturacionSchema = new mongoose.Schema({
     admin: Boolean
 })
 
-var Facturacion = mongoose.model('facturacion',FacturacionSchema);
+var Facturacion = mongoose.model('facturacion', FacturacionSchema, 'facturacion');
 
 module.exports = Facturacion;

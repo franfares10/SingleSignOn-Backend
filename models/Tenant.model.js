@@ -4,12 +4,12 @@ const { stringify } = require('querystring');
 var TenantSchema = new mongoose.Schema({
     name: String,
     jwt_secret: String,
-    redirectUrl: {
+    redirect: {
         type: String,
         required: false
     }
 })
 
-var Tenant = mongoose.model('tenant',TenantSchema);
+var Tenant = mongoose.model('tenant', TenantSchema, 'tenants');
 
 module.exports = Tenant;

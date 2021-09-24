@@ -8,6 +8,6 @@ var SuscripcionesSchema = new mongoose.Schema({
     admin: Boolean
 })
 
-var Suscripciones = mongoose.model('suscripciones',SuscripcionesSchema);
+var Suscripciones = mongoose.model('suscripciones', SuscripcionesSchema, 'suscripciones');
 
 module.exports = Suscripciones;

@@ -6,15 +6,14 @@ var Mobile = require('../models/Mobile.model');
 var Suscripciones = require('../models/Suscripciones.model');
 var Web = require('../models/Web.model');
 var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
+const { SALT } = require('../constants/constants');
 
 
 const createUser = async function (user) {
     // Creating a new Mongoose Object by using the new keyword
-
     const credentials = {
         email: user.email,
-        password: bcrypt.hashSync(user.password, bcrypt.genSaltSync(8))
+        password: bcrypt.hashSync(user.password, SALT)
     }
 
     const tenantUser = {
@@ -98,18 +97,6 @@ const registerUserInTenant = async function (user) {
 }
 
 
-const checkCredentials = async function (email, password) {
-    console.log("02- Busca las credenciales del usuario")
-    var user = await Credentials.find({
-        email
-    })
-    if (password === user[0].password) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 const checkEmail = async function (email) {
     console.log("02- Busca las credenciales del usuario")
     var isEmailRegistered = await Credentials.exists({
@@ -129,7 +116,6 @@ const checkTenantInfo = async function (tenant) {
 
 //Almost equal to 'getUser' method, refactor this
 const checkEmailTenant = async function (email, tenant) {
-
     switch (tenant) {
         case 'cms':
             var isUserRegistered = await CMS.exists({
@@ -191,7 +177,6 @@ const getUser = async function (email, tenant) {
 }
 
 module.exports = {
-    checkCredentials,
     checkTenantInfo,
     getUser,
     createUser

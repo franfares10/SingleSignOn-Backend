@@ -8,6 +8,6 @@ var WebSchema = new mongoose.Schema({
     admin: Boolean
 })
 
-var Web = mongoose.model('web',WebSchema);
+var Web = mongoose.model('web', WebSchema, 'web');
 
 module.exports = Web;

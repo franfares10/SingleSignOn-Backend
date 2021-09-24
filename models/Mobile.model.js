@@ -8,6 +8,6 @@ var MobileSchema = new mongoose.Schema({
     admin: Boolean
 })
 
-var Mobile = mongoose.model('mobile',MobileSchema);
+var Mobile = mongoose.model('mobile', MobileSchema, 'mobile');
 
 module.exports = Mobile;
