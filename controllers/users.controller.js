@@ -8,7 +8,8 @@ const externalLogin = async function (req, res) {
     const { email, password, tenant } = req.body;
     try {
         const credentialService = new CredentialService();
-        const isValidCredentials = await credentialService.isValidCredentials(email, password);
+        const isValidCredentials = await credentialService.isValidCredentials(email, password, tenant);
+        console.log("isValidCredentials: "+isValidCredentials);
         if (isValidCredentials) {
             const tenantService = new TenantService(tenant);
             const tenantInfo = await tenantService.getTenantInfo();

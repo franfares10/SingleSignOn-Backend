@@ -13,7 +13,8 @@ const createUser = async function (user) {
     // Creating a new Mongoose Object by using the new keyword
     const credentials = {
         email: user.email,
-        password: bcrypt.hashSync(user.password, SALT)
+        password: bcrypt.hashSync(user.password, SALT),
+        tenant: user.tenant
     }
 
     const tenantUser = {
@@ -26,7 +27,7 @@ const createUser = async function (user) {
 
     try {
 
-        var isUserRegistered = await checkEmail(user.email);
+        var isUserRegistered = await checkEmail(user.email, user.tenant);
         var isUserRegisteredInTenant = await checkEmailTenant(user.email, user.tenant);
 
         if (!isUserRegistered) { //if not registered --> we must create the user in both Collections (Credentials && Specified Tenant)
@@ -35,7 +36,7 @@ const createUser = async function (user) {
             var newCredentialsUser = new Credentials(credentials);
             // Saving the User in Credentials Collection
             var savedUserInCredentials = await newCredentialsUser.save();
-
+            console.log(savedUserInCredentials)
             //method to register the user in the correct tenant
             var savedUserInTenant = await registerUserInTenant(tenantUser);
 
@@ -97,10 +98,11 @@ const registerUserInTenant = async function (user) {
 }
 
 
-const checkEmail = async function (email) {
+const checkEmail = async function (email, tenant) {
     console.log("02- Busca las credenciales del usuario")
     var isEmailRegistered = await Credentials.exists({
-        email
+        email,
+        tenant
     })
     return isEmailRegistered;
 }
