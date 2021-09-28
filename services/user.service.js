@@ -6,7 +6,7 @@ var Mobile = require('../models/Mobile.model');
 var Suscripciones = require('../models/Suscripciones.model');
 var Web = require('../models/Web.model');
 var bcrypt = require('bcryptjs');
-const { SALT } = require('../constants/constants');
+const { SALT,  CMS_KEY,FACTURACION_KEY,MOBILE_KEY,SUSCRIPCIONES_KEY,WEB_KEY} = require('../constants/constants');
 
 
 const createUser = async function (user) {
@@ -65,23 +65,23 @@ const createUser = async function (user) {
 const registerUserInTenant = async function (user) {
     try {
         switch (user.tenant) {
-            case 'cms':
+            case CMS_KEY:
                 var newUser = new CMS(user);
                 var savedUser = await newUser.save();
                 return savedUser;
-            case 'facturacion':
+            case FACTURACION_KEY:
                 var newUser = new Facturacion(user);
                 var savedUser = await newUser.save();
                 return savedUser;
-            case 'mobile':
+            case MOBILE_KEY:
                 var newUser = new Mobile(user);
                 var savedUser = await newUser.save();
                 return savedUser;
-            case 'suscripciones':
+            case SUSCRIPCIONES_KEY:
                 var newUser = new Suscripciones(user);
                 var savedUser = await newUser.save();
                 return savedUser;
-            case 'web':
+            case WEB_KEY:
                 var newUser = new Web(user);
                 var savedUser = await newUser.save();
                 return savedUser;
