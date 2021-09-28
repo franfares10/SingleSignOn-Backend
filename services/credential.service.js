@@ -7,9 +7,10 @@ class CredentialService {
 
     }
 
-    async isValidCredentials(email, password) {
+    async isValidCredentials(email, password, tenant) {
         const hashedPassword = await bcrypt.hash(password, SALT);
-        const user = await Credentials.find({ email });
+        const user = await Credentials.find({ email ,tenant});
+        console.log(hashedPassword)
         if (user[0]) {
             if (hashedPassword === user[0].password) {
                 return true;

@@ -27,8 +27,6 @@ app.get('/', (req, res) => {
     });
 });
 
-// Database
-require('./database/config');
 
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
