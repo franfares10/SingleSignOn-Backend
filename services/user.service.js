@@ -36,15 +36,16 @@ const createUser = async function (user) {
             var newCredentialsUser = new Credentials(credentials);
             // Saving the User in Credentials Collection
             var savedUserInCredentials = await newCredentialsUser.save();
-            console.log(savedUserInCredentials)
+            
             //method to register the user in the correct tenant
             var savedUserInTenant = await registerUserInTenant(tenantUser);
-
+            console.log("04- El usuario se guardó en el tenant correspondiente")
             return savedUserInTenant;
         } else {
             if (!isUserRegisteredInTenant) { //if registered in credentials && not registered in the specified tenant --> we must create the user in the Tenant Collection
 
                 var savedUserInTenant = await registerUserInTenant(tenantUser);
+                console.log("04- El usuario se guardó en el tenant correspondiente")
                 return savedUserInTenant;
 
             } else { //The user is registered in both Tenant and Credentials Collection
@@ -66,12 +67,9 @@ const createUser = async function (user) {
 const registerUserInTenant = async function (user) {
     try {
         var tenant = user.tenant;
-        console.log(tenant)
-    
-        switch (user.tenant) {
+        switch (tenant) {
             case CMS_KEY:
                 var newUser = new CMS(user);
-                console.log(newUser);
                 var savedUser = await newUser.save();
                 return savedUser;
             case FACTURACION_KEY:
@@ -92,7 +90,7 @@ const registerUserInTenant = async function (user) {
                 return savedUser;
         }
     } catch (e) {
-        console.log(e);
+        console.log("XX - Error guardando en el tenant al usuario")
         throw Error("Error while creating tenant user")
     }
 }
@@ -118,28 +116,29 @@ const checkTenantInfo = async function (tenant) {
 
 //Almost equal to 'getUser' method, refactor this
 const checkEmailTenant = async function (email, tenant) {
+    console.log('03- Yendo a buscar la información al Tenant')
     switch (tenant) {
-        case 'cms':
+        case CMS_KEY:
             var isUserRegistered = await CMS.exists({
                 email
             });
             return isUserRegistered;
-        case 'facturacion':
+        case FACTURACION_KEY:
             var isUserRegistered = await Facturacion.exists({
                 email
             });
             return isUserRegistered;
-        case 'mobile':
+        case MOBILE_KEY:
             var isUserRegistered = await Mobile.exists({
                 email
             });
             return isUserRegistered;
-        case 'suscripciones':
+        case SUSCRIPCIONES_KEY:
             var isUserRegistered = await Suscripciones.exists({
                 email
             });
             return isUserRegistered;
-        case 'web':
+        case WEB_KEY:
             var isUserRegistered = await Web.exists({
                 email
             });
@@ -150,27 +149,27 @@ const checkEmailTenant = async function (email, tenant) {
 const getUser = async function (email, tenant) {
     console.log("05- Buscando informacion correspondiente al user y tenant")
     switch (tenant) {
-        case 'cms':
+        case CMS_KEY:
             var user = await CMS.find({
                 email
             });
             return user[0];
-        case 'facturacion':
+        case FACTURACION_KEY:
             var user = await Facturacion.find({
                 email
             });
             return user[0];
-        case 'mobile':
+        case MOBILE_KEY:
             var user = await Mobile.find({
                 email
             });
             return user[0];
-        case 'suscripciones':
+        case SUSCRIPCIONES_KEY:
             var user = await Suscripciones.find({
                 email
             });
             return user[0];
-        case 'web':
+        case WEB_KEY:
             var user = await Web.find({
                 email
             });
@@ -183,119 +182,3 @@ module.exports = {
     getUser,
     createUser
 }
-
-
-/*
-// Saving the context of this module inside the _the variable
-_this = this
-
-// Async function to get the User List
-exports.getUsers = async function (query, page, limit) {
-
-    // Options setup for the mongoose paginate
-    var options = {
-        page,
-        limit
-    }
-    // Try Catch the awaited promise to handle the error 
-    try {
-        var Users = await User.paginate(query, options)
-        // Return the Userd list that was retured by the mongoose promise
-        return Users;
-
-    } catch (e) {
-        // return a Error message describing the reason 
-        throw Error('Error while Paginating Users');
-    }
-}
-
-exports.createUser = async function (user) {
-    // Creating a new Mongoose Object by using the new keyword
-    var hashedPassword = bcrypt.hashSync(user.password, bcrypt.genSaltSync(8));
-    var newUser = new User({
-        name: user.name,
-        email: user.email,
-        date: new Date(),
-        password: hashedPassword
-    })
-
-    try {
-        // Saving the User 
-        var savedUser = await newUser.save();
-        var token = jwt.sign({
-            id: savedUser._id
-        }, process.env.SECRET, {
-            expiresIn: 86400 // expires in 24 hours
-        });
-        return token;
-    } catch (e) {
-        // return a Error message describing the reason 
-        console.log(e)    
-        throw Error("Error while Creating User")
-    }
-}
-
-exports.updateUser = async function (user) {
-    var id = user.id
-    try {
-        //Find the old User Object by the Id
-        var oldUser = await User.findById(id);
-    } catch (e) {
-        throw Error("Error occured while Finding the User")
-    }
-    // If no old User Object exists return false
-    if (!oldUser) {
-        return false;
-    }
-    //Edit the User Object
-    oldUser.name = user.name
-    oldUser.email = user.email
-    oldUser.password = user.password
-    try {
-        var savedUser = await oldUser.save()
-        return savedUser;
-    } catch (e) {
-        throw Error("And Error occured while updating the User");
-    }
-}
-
-exports.deleteUser = async function (id) {
-
-    // Delete the User
-    try {
-        var deleted = await User.remove({
-            _id: id
-        })
-        if (deleted.n === 0 && deleted.ok === 1) {
-            throw Error("User Could not be deleted")
-        }
-        return deleted;
-    } catch (e) {
-        throw Error("Error Occured while Deleting the User")
-    }
-}
-
-
-exports.loginUser = async function (user) {
-
-    // Creating a new Mongoose Object by using the new keyword
-    try {
-        // Find the User 
-        var _details = await User.findOne({
-            email: user.email
-        });
-        var passwordIsValid = bcrypt.compareSync(user.password, _details.password);
-        if (!passwordIsValid) throw Error("Invalid username/password")
-
-        var token = jwt.sign({
-            id: _details._id
-        }, process.env.SECRET, {
-            expiresIn: 86400 // expires in 24 hours
-        });
-        return token;
-    } catch (e) {
-        // return a Error message describing the reason     
-        throw Error("Error while Login User")
-    }
-
-}*/

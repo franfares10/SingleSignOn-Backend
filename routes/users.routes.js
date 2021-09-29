@@ -31,15 +31,5 @@ router.post('/register',
     registerUser
 );
 
-/*
-router.post('/logininterno',
-    [
-        check('mail').not().isEmpty(),
-        check('password').not().isEmpty(),
-        validarCampos
-    ],
-    logininterno
-);*/
-
 
 module.exports = router;

@@ -3,110 +3,99 @@
   "info": {
     "description": "",
     "version": "1.0.0",
-    "title": "Swagger Aplicaciones Distribuidas 2021"
+    "title": "Swagger Integración de Aplicaciones 2021"
   },
-  "host": "petstore.swagger.io",
+  "host": "",
   "basePath": "/v2",
   "tags": [
     {
-      "name": "Personas",
-      "description": "Operations about persons",
+      "name": "Single Sign On Backend",
+      "description": "Operations about sso tokens",
       "externalDocs": {
         "description": "Find out more",
         "url": "http://swagger.io"
       }
     }
   ],
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
-    "/forms/createForm": {
+    "/user/register": {
       "post": {
-        "tags": [
-          "Personas"
-        ],
-        "summary": "Create a new person",
-        "description": "",
-        "operationId": "addPet",
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "description": "Creates a new user with the specific tenant from the request",
+        "tags": ["Registrar usuarios en tenants"],
+        "summary": "Registra un usuario en un tenant específico según el Request.",
+        "operationId": "registerUser",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "body",
-            "name": "body",
-            "description": "Pet object that needs to be added to the store",
+            "description": "User object that needs to be registered in the DataBase",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Person"
+              "$ref": "#/definitions/UserTenant"
             }
           }
         ],
         "responses": {
-          "405": {
-            "description": "Invalid input"
+          "201": {
+            "type": "object",
+            "schema": { "$ref": "#/definitions/UserRegisteredResponse" }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GeneralError"
+              }
+            }
           }
         },
         "security": [
           {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
+            "tenant_auth": ["write:UserTenant"]
           }
         ]
       }
     },
-    "/forms/getForm/{id}": {
-      "get": {
-        "tags": [
-          "Personas"
-        ],
-        "summary": "Get an existing person by id",
-        "description": "Multiple status values can be provided with comma separated strings",
-        "operationId": "findPetsByStatus",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+    "/user/login": {
+      "post": {
+        "tags": ["Usuarios"],
+        "summary": "Get JWT Token from a Valid User",
+        "description": "A status 200 with a JWT will be returned when this endpoint is called",
+        "operationId": "externalLogin",
+        "produces": ["application/json"],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "description": "Status values that need to be considered for filter",
+            "in": "body",
+            "description": "User object that needs to be verified if exists or not",
             "required": true,
-            "type": "number"
+            "schema": {
+              "$ref": "#/definitions/UserRequestLogin"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Person"
-              }
+              "$ref": "#/definitions/UserVerifiedResponse"
             }
           },
-          "400": {
-            "description": "Invalid status value"
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorBusiness"
+            }
           }
-        },
-        "security": [
-          {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
-          }
-        ]
-      }
+        }
+      },
+      "security": [
+        {
+          "tenant_auth": ["read:UserRequestLogin"]
+        }
+      ]
     }
   },
   "securityDefinitions": {
@@ -126,19 +115,107 @@
     }
   },
   "definitions": {
-    "Person": {
+    "UserTenant": {
       "type": "object",
       "properties": {
-        "formId": {
-          "type": "integer",
-          "format": "int64"
+        "name": {
+          "type": "string"
         },
-        "formName": {
+        "last_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "tenant": {
+          "type": "string"
+        },
+        "admin": {
           "type": "string"
         }
-      },
-      "xml": {
-        "name": "Form"
+      }
+    },
+
+    "GeneralError": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "param": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "UserRequestLogin": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "tenant": {
+          "type": "string"
+        }
+      }
+    },
+    "ErrorBusiness": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "status": { "type": "string" }
+      }
+    },
+    "UserVerifiedResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "redirect": {
+          "type": "string"
+        }
+      }
+    },
+    "UserRegisteredResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "object",
+          "properties": {
+            "email": { "type": "string" },
+            "tenant": { "type": "string" },
+            "name": { "type": "string" },
+            "last_name": { "type": "string" },
+            "admin": { "type": "string" },
+            "_id": { "type": "string" },
+            "__v": { "type": "string" }
+          }
+        },
+        "message": {
+          "type": "string"
+        }
       }
     }
   },

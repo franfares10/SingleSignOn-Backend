@@ -4,6 +4,7 @@ var Facturacion = require('../models/Facturacion.model');
 var Mobile = require('../models/Mobile.model');
 var Suscripciones = require('../models/Suscripciones.model');
 var Web = require('../models/Web.model');
+const { CMS_KEY, FACTURACION_KEY, MOBILE_KEY, SUSCRIPCIONES_KEY, WEB_KEY } = require('../constants/constants');
 
 class TenantService {
 	constructor(tenantName) {
@@ -12,20 +13,17 @@ class TenantService {
 
 	async getUserFromTenant(email) {
 		let mongooseModel;
-		if (this._tenantName === 'cms') {
-			mongooseModel = CMS;
-		}
-		if (this._tenantName === 'facturacion') {
-			mongooseModel = Facturacion;
-		}
-		if (this._tenantName === 'mobile') {
-			mongooseModel = Mobile;
-		}
-		if (this._tenantName === 'suscripciones') {
-			mongooseModel = Suscripciones;
-		}
-		if (this._tenantName === 'web') {
-			mongooseModel = Web;
+		switch(this._tenantName){
+			case CMS_KEY:
+				mongooseModel = CMS;
+			case FACTURACION_KEY:
+				mongooseModel = Facturacion;
+			case MOBILE_KEY:
+				mongooseModel = Mobile;
+			case SUSCRIPCIONES_KEY:
+				mongooseModel = Suscripciones;
+			case WEB_KEY:
+				mongooseModel = Web;
 		}
 		const user = await mongooseModel.find({ email });
 		return user[0]
