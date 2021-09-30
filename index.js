@@ -23,7 +23,7 @@ app.use(express.json({ limit: '50mb' }));
 app.get('/', (req, res) => {
     res.json({
         ok: true,
-        msg: 'Welcome to Aplicaciones Distribuidas Backend',
+        msg: 'Welcome to Integración de aplicaciones Backend',
     });
 });
 

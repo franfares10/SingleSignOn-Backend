@@ -5,7 +5,11 @@ Web server built in Node.js with Express.js for the backend of the Application I
 
 ## Heroku cloud deployed version
 
-If you want to view the project without having to install it locally, you can access the version deployed in Heroku [clicking here!](https://distribuidas-backend.herokuapp.com/)
+If you want to view the project without having to install it locally, you can access the version deployed in Heroku [clicking here!](https://singlesignonbackend.herokuapp.com/)
+
+## Swagger of the project
+
+If you want to use our SSO, you can view our swagger to connect with us: https://singlesignonbackend.herokuapp.com/api-docs
 
 ## Installation and local deployment
 
@@ -37,7 +41,6 @@ mongodb+srv://readOnly:readOnly@cluster0.iafee.mongodb.net/appInteractivasDataBa
 - Marco Mercurio
 - Julian Armagno
 - Lucas Rial
-- Nicolas Gaido
 - Cristhian Apolitano 
 
 ## License

@@ -5,8 +5,8 @@
     "version": "1.0.0",
     "title": "Swagger Integración de Aplicaciones 2021"
   },
-  "host": "",
-  "basePath": "/v2",
+  "host": "singlesignonbackend.herokuapp.com/",
+  "basePath": "api",
   "tags": [
     {
       "name": "Single Sign On Backend",
@@ -17,9 +17,9 @@
       }
     }
   ],
-  "schemes": ["http"],
+  "schemes": ["https"],
   "paths": {
-    "/user/register": {
+    "/users/register": {
       "post": {
         "description": "Creates a new user with the specific tenant from the request",
         "tags": ["Registrar usuarios en tenants"],
@@ -30,6 +30,7 @@
         "parameters": [
           {
             "in": "body",
+            "name": "UserTenantRegister",
             "description": "User object that needs to be registered in the DataBase",
             "required": true,
             "schema": {
@@ -59,16 +60,18 @@
         ]
       }
     },
-    "/user/login": {
+    "/users/login": {
       "post": {
-        "tags": ["Usuarios"],
+        "tags": ["Login de usuario en tenant específico"],
         "summary": "Get JWT Token from a Valid User",
         "description": "A status 200 with a JWT will be returned when this endpoint is called",
         "operationId": "externalLogin",
+        "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
           {
             "in": "body",
+            "name": "UserRequestLogin",
             "description": "User object that needs to be verified if exists or not",
             "required": true,
             "schema": {
@@ -119,22 +122,28 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "User name to be registered in the app"
         },
         "last_name": {
-          "type": "string"
+          "type": "string",
+          "description": "User surname to be registered in the app"
         },
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "Email of the user to be registered in the app."
         },
         "password": {
-          "type": "string"
+          "type": "string",
+          "description": "User password for the app, it must be at least 8 chars"
         },
         "tenant": {
-          "type": "string"
+          "type": "string",
+          "description": "Tenant UUID to know where it should be registered"
         },
         "admin": {
-          "type": "string"
+          "type": "boolean",
+          "description": "Whether the user is an admin or not"
         }
       }
     },
@@ -146,10 +155,12 @@
           "type": "object",
           "properties": {
             "type": {
-              "type": "string"
+              "type": "string",
+              "description":"Shows the error, and its type"
             },
             "param": {
-              "type": "string"
+              "type": "string",
+              "description":"Show the errors name"
             },
             "location": {
               "type": "string"
@@ -162,13 +173,16 @@
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "Users email to check whether if he is or not registered "
         },
         "password": {
-          "type": "string"
+          "type": "string",
+          "description": "Users password to check with the email, if the credentials are ok"
         },
         "tenant": {
-          "type": "string"
+          "type": "string",
+          "description": "Tenant where the users want to authenticate with"
         }
       }
     },
@@ -176,25 +190,30 @@
       "type": "object",
       "properties": {
         "message": {
-          "type": "string"
+          "type": "string",
+          "description": "Simple message showing why the error occurred"
         },
-        "status": { "type": "string" }
+        "status": { "type": "string","description":"HttpStatus to inform the error" }
       }
     },
     "UserVerifiedResponse": {
       "type": "object",
       "properties": {
         "status": {
-          "type": "string"
+          "type": "string",
+          "description":"Simple status showing transaction result"
         },
         "token": {
-          "type": "string"
+          "type": "string",
+          "description":"JWT Token with the requirements needed to be validate with ClientApi"
         },
         "message": {
-          "type": "string"
+          "type": "string",
+          "description":"Message informing if the transaction was ok or not"
         },
         "redirect": {
-          "type": "string"
+          "type": "string",
+          "description":"RedirectUrl where the login should redirect if its a FrontendClientApp"
         }
       }
     },
@@ -204,17 +223,17 @@
         "user": {
           "type": "object",
           "properties": {
-            "email": { "type": "string" },
-            "tenant": { "type": "string" },
-            "name": { "type": "string" },
-            "last_name": { "type": "string" },
-            "admin": { "type": "string" },
+            "email": { "type": "string" ,"description":"User registration email"},
+            "tenant": { "type": "string", "description":"Tenant where the registration was realized" },
+            "name": { "type": "string" , "description":"User name for the app" },
+            "last_name": { "type": "string","description":"User last name for the app" },
+            "admin": { "type": "string" ,"description":"If the user registered was an admin or not"},
             "_id": { "type": "string" },
             "__v": { "type": "string" }
           }
         },
         "message": {
-          "type": "string"
+          "type": "string","description":"Simple message informing the result of the transaction"
         }
       }
     }
