@@ -16,14 +16,18 @@ class TenantService {
 		switch(this._tenantName){
 			case CMS_KEY:
 				mongooseModel = CMS;
+				break;
 			case FACTURACION_KEY:
 				mongooseModel = Facturacion;
+				break;
 			case MOBILE_KEY:
 				mongooseModel = Mobile;
+				break;
 			case SUSCRIPCIONES_KEY:
 				mongooseModel = Suscripciones;
 			case WEB_KEY:
 				mongooseModel = Web;
+				break;
 		}
 		const user = await mongooseModel.find({ email });
 		return user[0]
