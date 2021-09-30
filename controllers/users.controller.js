@@ -2,6 +2,7 @@ const TenantService = require('../services/tenant.service');
 const CredentialService = require('../services/credential.service');
 const jwt = require('jsonwebtoken');
 const UserService = require('../services/user.service');
+const { VALID_TENANTS } = require("../constants/constants");
 
 //Metodo para realizar el login desde el endpoint
 const externalLogin = async function (req, res) {
@@ -56,6 +57,10 @@ const registerUser = async function (req, res) {
     }
 
     try {
+        // Previously validate that it is a permitted tenant
+        if (!isValidTenant(tenant)) {
+            return res.status(406).json({ status: 406, message: "Invalid tenant." })
+        }
         // Calling the Service function with the new object from the Request Body
         var createdUser = await UserService.createUser(User)
         return res.status(201).json({ user: createdUser, message: "Succesfully Created User" })
@@ -65,6 +70,8 @@ const registerUser = async function (req, res) {
         return res.status(400).json({ status: 400, message: e.message })
     }
 }
+
+const isValidTenant = (tenant) => VALID_TENANTS.includes(tenant) ? true : false;
 
 module.exports = {
     externalLogin,
