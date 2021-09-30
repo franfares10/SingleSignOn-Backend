@@ -25,6 +25,7 @@ class TenantService {
 				break;
 			case SUSCRIPCIONES_KEY:
 				mongooseModel = Suscripciones;
+				break;
 			case WEB_KEY:
 				mongooseModel = Web;
 				break;
