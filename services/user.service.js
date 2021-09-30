@@ -63,7 +63,6 @@ const createUser = async function (user) {
 
 
 
-//I´ve made this method apart from 'createUser' but check if it´s OK or refactor it.
 const registerUserInTenant = async function (user) {
     try {
         var tenant = user.tenant;
@@ -114,7 +113,7 @@ const checkTenantInfo = async function (tenant) {
 
 }
 
-//Almost equal to 'getUser' method, refactor this
+
 const checkEmailTenant = async function (email, tenant) {
     console.log('03- Yendo a buscar la información al Tenant')
     switch (tenant) {
