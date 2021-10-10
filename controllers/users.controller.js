@@ -70,12 +70,34 @@ const registerUser = async function (req, res) {
         return res.status(400).json({ status: 400, message: e.message })
     }
 }
-
+const deleteUser = async function (req, res) {
+    const {
+        email,
+        tenant
+    } = req.body;
+    const User = {
+        email,
+        tenant
+    }
+    try {
+        var isDelete = await UserService.deleteUser(User)
+        if(isDelete){
+            return res.status(204).json({status:204, message: "Succesfully Deleted User" })
+        }else{
+            return res.status(400).json({status:400, user:User, message: "Unsuccessfully Deleted User" })
+        }
+    } catch (e) {
+        //Return an Error Response Message with Code and the Error Message.
+        console.log(e)
+        return res.status(400).json({ status: 400, message: e.message })
+    }
+}
 const isValidTenant = (tenant) => VALID_TENANTS.includes(tenant) ? true : false;
 
 module.exports = {
     externalLogin,
-    registerUser
+    registerUser,
+    deleteUser
 }
 
 

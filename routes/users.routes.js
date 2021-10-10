@@ -5,7 +5,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
-const { externalLogin , registerUser } = require('../controllers/users.controller')
+const { externalLogin , registerUser, deleteUser } = require('../controllers/users.controller')
 const router = Router();
 
 router.post('/login',
@@ -30,6 +30,13 @@ router.post('/register',
     ],
     registerUser
 );
-
+router.post('/delete',
+    [
+        check('email').not().isEmpty(),
+        check('tenant').not().isEmpty(),
+        validarCampos
+    ],
+    deleteUser
+);
 
 module.exports = router;

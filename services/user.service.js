@@ -60,7 +60,35 @@ const createUser = async function (user) {
         throw Error(e.message)
     }
 }
+const deleteUser = async function (user) {
 
+    try {
+        var operation = false;
+        var isUserRegistered = await checkEmail(user.email, user.tenant);
+        var isUserRegisteredInTenant = await checkEmailTenant(user.email, user.tenant);
+        if(isUserRegistered && isUserRegisteredInTenant){
+            var response = await Credentials.deleteOne({ email: user.email, tenant: user.tenant });
+            if (user.tenant === "cms"){
+                await CMS.deleteOne({ email: user.email });
+            }if (user.tenant === "facturacion"){
+                await Facturacion.deleteOne({ email: user.email });
+            }if (user.tenant === "mobile"){
+                await Mobile.deleteOne({ email: user.email });
+            }if (user.tenant === "web"){
+                await Web.deleteOne({ email: user.email });
+            }if (user.tenant === "suscripciones"){
+                await Suscripciones.deleteOne({ email: user.email });
+            }
+            operation = true;
+        }
+        return operation;
+
+    } catch (e) {
+        // return a Error message describing the reason 
+        console.log(e)
+        throw Error(e.message)
+    }
+}
 
 
 const registerUserInTenant = async function (user) {
@@ -179,5 +207,6 @@ const getUser = async function (email, tenant) {
 module.exports = {
     checkTenantInfo,
     getUser,
-    createUser
+    createUser,
+    deleteUser
 }
