@@ -5,7 +5,8 @@ var WebSchema = new mongoose.Schema({
     tenant: String,
     name: String,
     last_name: String,
-    admin: Boolean
+    admin: Boolean,
+    claims: [String]
 })
 
 var Web = mongoose.model('web', WebSchema, 'web');

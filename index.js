@@ -33,6 +33,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Paths
 app.use('/api/users', require('./routes/users.routes'));
+app.use('/api/claims', require('./routes/claims.routes'))
 
 app.listen(process.env.PORT, () => {
     console.log('Example app listening on port ' + process.env.PORT);
