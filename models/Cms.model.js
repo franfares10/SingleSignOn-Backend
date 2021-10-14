@@ -5,7 +5,6 @@ var CmsSchema = new mongoose.Schema({
     tenant: String,
     name: String,
     last_name: String,
-    admin: Boolean,
     claims: [String]
 })
 

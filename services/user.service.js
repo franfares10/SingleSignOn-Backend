@@ -28,7 +28,6 @@ const createUser = async function (user) {
     tenant: user.tenant,
     name: user.name,
     last_name: user.last_name,
-    admin: user.admin,
   };
 
   try {

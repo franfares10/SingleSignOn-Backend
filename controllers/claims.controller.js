@@ -49,22 +49,25 @@ const createNewUserClaim = async function (req, res) {
   }
 };
 
-const deleteClaimFromTenant = async function () {
-  const { tenant, user, claim } = req.body;
+const deleteClaimFromTenant = async function (req,res) {
+  const { tenant, jwtPayload,jwtToken, claim } = req.body;
+  var jwtSecret = jwtToken;
   try {
     if (!isValidTenant(tenant)) {
       return res.status(406).json({ status: 406, message: "Invalid tenant." });
     }
     var result = await ClaimService.deleteExistingClaim(
       tenant,
-      claim.toUpperCase()
+      claim.toUpperCase(),
+      jwtPayload,
+      jwtSecret
     );
     if (!result) {
       return res
         .status(401)
         .json({ message: "You must be an Admin to perform this operation" });
     }
-    return res.status(204);
+    return res.status(204).send();
   } catch (e) {
     console.error(e);
     return res.status(400).send("You cant perform this operation right now");

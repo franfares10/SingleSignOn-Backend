@@ -26,9 +26,10 @@ router.post(
 router.delete(
   "/revoke",
   [
-    check("email").not().isEmpty(),
+    check("jwtPayload").not().isEmpty(),
+    check("jwtToken").not().isEmpty(),
     check("tenant").not().isEmpty(),
-    check("user").not().isEmpty(),
+    check("claim").not().isEmpty(),
   ],
   deleteClaimFromTenant
 );
