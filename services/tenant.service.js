@@ -11,29 +11,6 @@ class TenantService {
 		this._tenantName = tenantName;
 	}
 
-	async getUserFromTenant(email) {
-		let mongooseModel;
-		switch(this._tenantName){
-			case CMS_KEY:
-				mongooseModel = CMS;
-				break;
-			case FACTURACION_KEY:
-				mongooseModel = Facturacion;
-				break;
-			case MOBILE_KEY:
-				mongooseModel = Mobile;
-				break;
-			case SUSCRIPCIONES_KEY:
-				mongooseModel = Suscripciones;
-				break;
-			case WEB_KEY:
-				mongooseModel = Web;
-				break;
-		}
-		const user = await mongooseModel.find({ email });
-		return user[0]
-	}
-
 	async getTenantInfo() {
 		const info = await Tenant.find({ name: this._tenantName });
 		return info[0]

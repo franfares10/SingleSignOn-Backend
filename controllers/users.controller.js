@@ -14,7 +14,7 @@ const externalLogin = async function (req, res) {
             const tenantService = new TenantService(tenant);
             const tenantInfo = await tenantService.getTenantInfo();
             const { jwt_secret, redirect } = tenantInfo;
-            const user = await tenantService.getUserFromTenant(email);
+            const user = await UserService.getUser(email,tenant);
             const token = jwt.sign(user.toJSON(), jwt_secret, { expiresIn: '1d' });
             return res.status(200).json({
                 status: 200,
@@ -70,15 +70,18 @@ const registerUser = async function (req, res) {
         return res.status(400).json({ status: 400, message: e.message })
     }
 }
+
 const deleteUser = async function (req, res) {
     const {
         email,
         tenant
     } = req.body;
+
     const User = {
         email,
         tenant
     }
+
     try {
         var isDelete = await UserService.deleteUser(User)
         if(isDelete){
@@ -92,6 +95,7 @@ const deleteUser = async function (req, res) {
         return res.status(400).json({ status: 400, message: e.message })
     }
 }
+
 const isValidTenant = (tenant) => VALID_TENANTS.includes(tenant) ? true : false;
 
 module.exports = {
