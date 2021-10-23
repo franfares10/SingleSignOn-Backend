@@ -3,7 +3,6 @@ const { stringify } = require('querystring');
 
 var TenantSchema = new mongoose.Schema({
     name: String,
-    jwt_secret: String,
     redirect: {
         type: String,
         required: false

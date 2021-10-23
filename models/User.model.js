@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var CmsSchema = new mongoose.Schema({
+var UserSchema = new mongoose.Schema({
     email: String,
     tenant: String,
     name: String,
@@ -8,6 +8,6 @@ var CmsSchema = new mongoose.Schema({
     admin: Boolean
 })
 
-var CMS = mongoose.model('cms', CmsSchema, 'cms');
+var Users = mongoose.model('users', UserSchema, 'users');
 
-module.exports = CMS;
+module.exports = Users;

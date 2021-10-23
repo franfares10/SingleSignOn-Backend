@@ -1,9 +1,11 @@
+const fs = require('fs');
 const TenantService = require('../services/tenant.service');
 const CredentialService = require('../services/credential.service');
 const jwt = require('jsonwebtoken');
 const UserService = require('../services/user.service');
-const { VALID_TENANTS } = require("../constants/constants");
+const {VALID_TENANTS} = require("../constants/constants");
 
+const PRIVATE_KEY = fs.readFileSync('E:\\SSO-Backend\\keys\\privateKey.key');
 //Metodo para realizar el login desde el endpoint
 const externalLogin = async function (req, res) {
     const { email, password, tenant } = req.body;
@@ -13,10 +15,11 @@ const externalLogin = async function (req, res) {
         if (isValidCredentials) {
             const tenantService = new TenantService(tenant);
             const tenantInfo = await tenantService.getTenantInfo();
-            const { jwt_secret, redirect } = tenantInfo;
-            const user = await tenantService.getUserFromTenant(email);
-            const token = jwt.sign(user.toJSON(), jwt_secret, { expiresIn: '1d' });
-            return res.status(200).json({
+            const { redirect } = tenantInfo; 
+            const user = await UserService.getUser(email,tenant);
+            
+            const token = jwt.sign(user.toJSON(),PRIVATE_KEY,{ algorithm: 'RS256' },{ expiresIn: '1d' });
+            return res.status(200).json({ 
                 status: 200,
                 token,
                 message: 'Token created successfully.',
@@ -70,15 +73,18 @@ const registerUser = async function (req, res) {
         return res.status(400).json({ status: 400, message: e.message })
     }
 }
+
 const deleteUser = async function (req, res) {
     const {
         email,
         tenant
     } = req.body;
+
     const User = {
         email,
         tenant
     }
+
     try {
         var isDelete = await UserService.deleteUser(User)
         if(isDelete){
@@ -92,6 +98,7 @@ const deleteUser = async function (req, res) {
         return res.status(400).json({ status: 400, message: e.message })
     }
 }
+
 const isValidTenant = (tenant) => VALID_TENANTS.includes(tenant) ? true : false;
 
 module.exports = {
