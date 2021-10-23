@@ -15,7 +15,7 @@ const externalLogin = async function (req, res) {
         if (isValidCredentials) {
             const tenantService = new TenantService(tenant);
             const tenantInfo = await tenantService.getTenantInfo();
-            const { jwt_secret, redirect } = tenantInfo; 
+            const { redirect } = tenantInfo; 
             const user = await UserService.getUser(email,tenant);
             
             const token = jwt.sign(user.toJSON(),PRIVATE_KEY,{ algorithm: 'RS256' },{ expiresIn: '1d' });
