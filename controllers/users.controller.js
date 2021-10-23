@@ -1,9 +1,11 @@
+const fs = require('fs');
 const TenantService = require('../services/tenant.service');
 const CredentialService = require('../services/credential.service');
 const jwt = require('jsonwebtoken');
 const UserService = require('../services/user.service');
-const { VALID_TENANTS } = require("../constants/constants");
+const {VALID_TENANTS} = require("../constants/constants");
 
+const PRIVATE_KEY = fs.readFileSync('E:\\SSO-Backend\\keys\\privateKey.key');
 //Metodo para realizar el login desde el endpoint
 const externalLogin = async function (req, res) {
     const { email, password, tenant } = req.body;
@@ -13,10 +15,11 @@ const externalLogin = async function (req, res) {
         if (isValidCredentials) {
             const tenantService = new TenantService(tenant);
             const tenantInfo = await tenantService.getTenantInfo();
-            const { jwt_secret, redirect } = tenantInfo;
+            const { jwt_secret, redirect } = tenantInfo; 
             const user = await UserService.getUser(email,tenant);
-            const token = jwt.sign(user.toJSON(), jwt_secret, { expiresIn: '1d' });
-            return res.status(200).json({
+            
+            const token = jwt.sign(user.toJSON(),PRIVATE_KEY,{ algorithm: 'RS256' },{ expiresIn: '1d' });
+            return res.status(200).json({ 
                 status: 200,
                 token,
                 message: 'Token created successfully.',

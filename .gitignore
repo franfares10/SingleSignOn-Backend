@@ -1,6 +1,6 @@
 #ignore node modules
-
+constants/*
 node_modules/*
-
+keys/*
 .env
 
