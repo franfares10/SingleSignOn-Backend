@@ -6,6 +6,7 @@ const { VALID_TENANTS } = require("../constants/constants");
 
 //Metodo para realizar el login desde el endpoint
 const externalLogin = async function (req, res) {
+  console.log(process.env.publicKey)
   const { email, password, tenant } = req.body;
   try {
     const credentialService = new CredentialService();
@@ -41,16 +42,15 @@ const externalLogin = async function (req, res) {
   }
 };
 
-
 const registerUser = async function (req, res) {
-  const { email, password, tenant, name, last_name} = req.body;
+  const { email, password, tenant, name, last_name } = req.body;
 
   const User = {
     email,
     password,
     tenant,
     name,
-    last_name
+    last_name,
   };
 
   try {
@@ -70,13 +70,16 @@ const registerUser = async function (req, res) {
   }
 };
 const deleteUser = async function (req, res) {
-  const { email, tenant } = req.body;
+  const { email, tenant,jwtToken,jwtPayload} = req.body;
   const User = {
     email,
     tenant,
   };
   try {
-    var isDelete = await UserService.deleteUser(User);
+    if (!isValidTenant(tenant)) {
+      return res.status(406).json({ status: 406, message: "Invalid tenant." });
+    }
+    var isDelete = await UserService.deleteUser(User,jwtPayload,jwtToken);
     if (isDelete) {
       return res
         .status(204)
@@ -100,5 +103,5 @@ const isValidTenant = (tenant) =>
 module.exports = {
   externalLogin,
   registerUser,
-  deleteUser
+  deleteUser,
 };

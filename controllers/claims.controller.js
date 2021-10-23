@@ -19,7 +19,7 @@ const validJwtValidation = async function (req, res) {
   if (result) {
     return res.status(204).send();
   }
-  return res.status(401).json({ message: "XX - TOCA DE ACA TITAN DE JARDÍN" });
+  return res.status(401).json({ message: "XX - TOKEN HA SIDO MODIFICADO" });
   //Le paso un secret, entonces con ese secret me consumen a mi con cierto payload. Además, me tienen que pasar el JWT  y verificar si son ellos.
 };
 
