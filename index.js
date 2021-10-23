@@ -11,7 +11,7 @@ dbConnection();
 
 // Express
 const app = express();
-
+console.log("ENV DEL HEROKU" + process.env.PRIVATE_SECRET_SSH)
 // CORS & Environment
 app.use(cors());
 
