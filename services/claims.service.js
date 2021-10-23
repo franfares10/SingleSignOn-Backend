@@ -22,7 +22,7 @@ const verifyRequestingUser = async function (user, tenant) {
       //Usuario está validado, le retorno el JWT correspondiente para que autorice.
       console.log("XX - USUARIO NO VALIDADO");
       return false;
-    }
+    } 
     const tenantInfoObject = new TenantService();
     const { jwt_secret } = await tenantInfoObject.getTenantSSOInfo();
     console.log("Secret con el que firmo" + jwt_secret);
