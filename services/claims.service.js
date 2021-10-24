@@ -132,6 +132,10 @@ const claimsForUser = async (user, claim) => {
   try {
     //Obtengo el usuario, a el mismo le voy a actualizar los claims.
     const userObtained = await getUser(user.email, user.tenant);
+    if(!userObtained){
+      console.log("XX - Usuario no encontrado")
+      return false;
+    }
     const newClaims = [];
     var update = false;
     userObtained.claims.forEach((claimObject) => {
