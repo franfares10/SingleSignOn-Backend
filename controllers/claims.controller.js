@@ -77,7 +77,6 @@ const deleteClaimFromTenant = async function () {
 const createTrazaClaimUser = async function (req, res) {
   const { claim, jwtToken, user } = req.body;
   const retornoValidate = await ClaimService.validateJwt(jwtToken);
-  console.log(retornoValidate)
   if (!retornoValidate) {
     return res
       .status(401)

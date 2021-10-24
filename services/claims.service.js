@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const Tenant = require("../models/Tenant.model");
 const TenantService = require("./tenant.service");
 const Users = require("../models/User.model");
+const { isValidTenant } = require("../controllers/claims.controller");
 
 const verifyRequestingUser = async function (user, tenant) {
   try {
