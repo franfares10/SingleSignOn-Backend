@@ -6,7 +6,7 @@ var UserSchema = new mongoose.Schema({
     name: String,
     last_name: String,
     admin: Boolean,
-    claims: [String]
+    claims: [Object]
 })
 
 var Users = mongoose.model('users', UserSchema, 'users');

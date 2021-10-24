@@ -1,5 +1,6 @@
 const ClaimService = require("../services/claims.service");
 const { VALID_TENANTS } = require("../constants/constants");
+const jwt = require("jsonwebtoken");
 
 const requestJWTClaims = async function (req, res) {
   console.log("01- Entrando a pedir JWT para claims");
@@ -19,7 +20,9 @@ const validJwtValidation = async function (req, res) {
   if (result) {
     return res.status(204).send();
   }
-  return res.status(401).json({ message: "XX - TOCA DE ACA TITAN DE JARDÍN" });
+  return res
+    .status(401)
+    .json({ message: "XX - No tenés los permisos necesarios para pasar" });
   //Le paso un secret, entonces con ese secret me consumen a mi con cierto payload. Además, me tienen que pasar el JWT  y verificar si son ellos.
 };
 
@@ -71,6 +74,40 @@ const deleteClaimFromTenant = async function () {
   }
 };
 
+const createTrazaClaimUser = async function (req, res) {
+  const { claim, jwtToken, user } = req.body;
+  if (!ClaimService.validateJwt(jwtToken)) {
+    return res
+      .status(401)
+      .json({ message: "JWT Token was corrupted, try again later." });
+  }
+
+  const result = await ClaimService.claimsForUser(user, claim);
+
+  if (!result) {
+    return res
+      .status(400)
+      .json({ message: "You cant perform this update right now." });
+  }
+  return res.status(204).send();
+};
+const deleteTrazaClaimUser = async function (req, res) {
+  const { claim, jwtToken, user } = req.body;
+  if (!ClaimService.validateJwt(jwtToken)) {
+    return res
+      .status(401)
+      .json({ message: "JWT Token was corrupted, try again later." });
+  }
+
+  const result = await ClaimService.deleteClaimsForUser(user, claim);
+
+  if (!result) {
+    return res
+      .status(400)
+      .json({ message: "You cant perform this delete right now." });
+  }
+  return res.status(204).send();
+};
 const isValidTenant = (tenant) =>
   VALID_TENANTS.includes(tenant) ? true : false;
 
@@ -79,4 +116,7 @@ module.exports = {
   deleteClaimFromTenant,
   requestJWTClaims,
   validJwtValidation,
+  createTrazaClaimUser,
+  isValidTenant,
+  deleteTrazaClaimUser,
 };
