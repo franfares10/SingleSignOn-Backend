@@ -51,19 +51,19 @@ const validateJwt = async function (jwtToken) {
       }
     );
     if (!jwtValidate) {
-      return new Error("XX - JWT TOKEN WAS CORRUPTED");
+      throw new Error("XX - JWT TOKEN WAS CORRUPTED");
     }
     var { email, tenant, claims } = jwt.decode(jwtToken); //admin
     if (!isValidTenant(tenant)) {
-      return new Error("XX - Tenant is not valid");
+      throw new Error("XX - Tenant is not valid");
     }
     const isUserAdmin = claims.forEach((e) => {
-      if (Object.keys(e)[0] == "ADMIN") {
+      if (Object.keys(e)[0] == "ADMIN" && Object.values(e)[0]==true) {
         return true;
       }
     });
     if (!isUserAdmin) {
-      return new Error("XX - No fue validado");
+      throw new Error("XX - No fue validado");
     }
     return true;
     //Acá mi duda es, le mandamos algo estatico como para que nos hasheen siempre eso y ahí saber.
