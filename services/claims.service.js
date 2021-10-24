@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const Tenant = require("../models/Tenant.model");
 const TenantService = require("./tenant.service");
 const Users = require("../models/User.model");
-const { isValidTenant } = require("../controllers/claims.controller");
+const { VALID_TENANTS } = require("../constants/constants");
 
 const verifyRequestingUser = async function (user, tenant) {
   try {
@@ -179,6 +179,9 @@ const deleteClaimsForUser = async (user, claim) => {
     throw new Error("XX - Error creating claim for user" + user);
   }
 };
+const isValidTenant = (tenant) =>
+  VALID_TENANTS.includes(tenant) ? true : false;
+
 
 module.exports = {
   createNewClaim,
