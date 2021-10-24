@@ -76,7 +76,9 @@ const deleteClaimFromTenant = async function () {
 
 const createTrazaClaimUser = async function (req, res) {
   const { claim, jwtToken, user } = req.body;
-  if (!ClaimService.validateJwt(jwtToken)) {
+  const retornoValidate = ClaimService.validateJwt(jwtToken);
+  console.log(retornoValidate)
+  if (!retornoValidate) {
     return res
       .status(401)
       .json({ message: "JWT Token was corrupted, try again later." });

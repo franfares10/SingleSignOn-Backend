@@ -45,14 +45,8 @@ const validateJwt = async function (jwtToken) {
     const jwtValidate = jwt.verify(
       jwtToken,
       jwt_secret,
-      { algorithms: "RS256" },
-      function (err, decode) {
-        console.log(err);
-      }
+      { algorithms: "RS256" }
     );
-    if (!jwtValidate) {
-      throw new Error("XX - JWT TOKEN WAS CORRUPTED");
-    }
     var { email, tenant, claims } = jwt.decode(jwtToken); //admin
     if (!isValidTenant(tenant)) {
       throw new Error("XX - Tenant is not valid");
