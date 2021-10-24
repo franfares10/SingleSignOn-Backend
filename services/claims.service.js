@@ -52,9 +52,10 @@ const validateJwt = async function (jwtToken) {
     if (!isValidTenant(tenant)) {
       throw new Error("XX - Tenant is not valid");
     }
-    const isUserAdmin = claims.forEach((e) => {
-      if (Object.keys(e)[0] == "ADMIN" && Object.values(e)[0]==true) {
-        return true;
+    var isUserAdmin = false;
+    claims.forEach((e) => {
+      if (Object.keys(e)[0]=== "ADMIN" && Object.values(e)[0]===true) {
+        isUserAdmin = true;
       }
     });
     if (!isUserAdmin) {
