@@ -9,8 +9,6 @@ const {
   externalLogin,
   registerUser,
   deleteUser,
-  createNewUserClaim,
-  deleteClaimFromTenant,
 } = require("../controllers/users.controller");
 const { deleteExistingClaim } = require("../services/user.service");
 const router = Router();
