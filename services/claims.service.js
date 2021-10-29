@@ -94,7 +94,22 @@ const deleteExistingClaim = async function (tenant, claim) {
     throw new Error("Error performing delete action on requested tenant");
   }
 };
-
+const checkValidClaim = async (user, claimIncoming) => {
+  try {
+    var claimsExisting = await Claims.findOne({ tenant: user.tenant });
+    if (!claimsExisting) {
+      return false;
+    }
+    var compararSet = new Set(claimsExisting.claims);
+    if (compararSet.has(Object.keys(claimIncoming)[0])) {
+      console.log("XX - El claim existe");
+      return true;
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
+};
 const claimsForUser = async (user, claim) => {
   const claimKey = Object.keys(claim)[0];
   try {
@@ -102,6 +117,11 @@ const claimsForUser = async (user, claim) => {
     const userObtained = await getUser(user.email, user.tenant);
     if (!userObtained) {
       console.log("XX - Usuario no encontrado");
+      return false;
+    }
+    const comparar = await checkValidClaim(user, claim);
+    if (!comparar) {
+      console.log("XX - Claim no existente");
       return false;
     }
     const newClaims = [];
