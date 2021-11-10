@@ -38,7 +38,10 @@ const validateJwt = async function (jwtToken) {
     return false;
   }
 };
-
+const fecthAllClaims = async (tenant) => {
+  const result = await Claims.findOne({ tenant: tenant }).select('claims -_id');
+  return result;
+};
 const createNewClaim = async function (tenant, claim) {
   //El parametro del jwtPayload, sería el token.
   var saveUser = { tenant, claims: [claim], lastUpdate: Date.now() };
@@ -181,4 +184,5 @@ module.exports = {
   validateJwt,
   claimsForUser,
   deleteClaimsForUser,
+  fecthAllClaims
 };

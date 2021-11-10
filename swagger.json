@@ -99,6 +99,106 @@
           "tenant_auth": ["read:UserRequestLogin"]
         }
       ]
+    },
+    "/claims/claim": {
+      "post": {
+        "tags": ["Asociación de claim para tenant"],
+        "summary": "Get JWT Token from a Valid User",
+        "description": "A status 200 with a JWT will be returned when this endpoint is called",
+        "operationId": "externalLogin",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ClaimRequest",
+            "description": "Claim Request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ClaimRequest"
+            }
+          }
+        ],
+        "responses": {
+          "204": {},
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorBusiness"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Delete de claim especifico para usuario"],
+        "summary": "Get JWT Token from a Valid User",
+        "description": "A status 200 with a JWT will be returned when this endpoint is called",
+        "operationId": "externalLogin",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ClaimRequest",
+            "description": "Claim Request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ClaimRequest"
+            }
+          }
+        ],
+        "responses": {
+          "204": {},
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorBusiness"
+            }
+          }
+        }
+      }
+    },
+    "/claims/all": {
+      "post": {
+        "tags": ["Post para obtener todos los claims de un tenan"],
+        "summary": "Get JWT Token from a Valid User",
+        "description": "A status 200 with a JWT will be returned when this endpoint is called",
+        "operationId": "externalLogin",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ClaimRequest",
+            "description": "Claim Request",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "tenant": { "type": "string" },
+                "jwtToken": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "type": "object",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorBusiness"
+            }
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {
@@ -156,11 +256,11 @@
           "properties": {
             "type": {
               "type": "string",
-              "description":"Shows the error, and its type"
+              "description": "Shows the error, and its type"
             },
             "param": {
               "type": "string",
-              "description":"Show the errors name"
+              "description": "Show the errors name"
             },
             "location": {
               "type": "string"
@@ -186,6 +286,28 @@
         }
       }
     },
+    "ClaimRequest": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "tenant": {
+              "type": "string"
+            }
+          }
+        },
+        "jwtToken": {
+          "type": "string"
+        },
+        "claim": {
+          "type": "string"
+        }
+      }
+    },
     "ErrorBusiness": {
       "type": "object",
       "properties": {
@@ -193,7 +315,10 @@
           "type": "string",
           "description": "Simple message showing why the error occurred"
         },
-        "status": { "type": "string","description":"HttpStatus to inform the error" }
+        "status": {
+          "type": "string",
+          "description": "HttpStatus to inform the error"
+        }
       }
     },
     "UserVerifiedResponse": {
@@ -201,19 +326,19 @@
       "properties": {
         "status": {
           "type": "string",
-          "description":"Simple status showing transaction result"
+          "description": "Simple status showing transaction result"
         },
         "token": {
           "type": "string",
-          "description":"JWT Token with the requirements needed to be validate with ClientApi"
+          "description": "JWT Token with the requirements needed to be validate with ClientApi"
         },
         "message": {
           "type": "string",
-          "description":"Message informing if the transaction was ok or not"
+          "description": "Message informing if the transaction was ok or not"
         },
         "redirect": {
           "type": "string",
-          "description":"RedirectUrl where the login should redirect if its a FrontendClientApp"
+          "description": "RedirectUrl where the login should redirect if its a FrontendClientApp"
         }
       }
     },
@@ -223,17 +348,33 @@
         "user": {
           "type": "object",
           "properties": {
-            "email": { "type": "string" ,"description":"User registration email"},
-            "tenant": { "type": "string", "description":"Tenant where the registration was realized" },
-            "name": { "type": "string" , "description":"User name for the app" },
-            "last_name": { "type": "string","description":"User last name for the app" },
-            "admin": { "type": "string" ,"description":"If the user registered was an admin or not"},
+            "email": {
+              "type": "string",
+              "description": "User registration email"
+            },
+            "tenant": {
+              "type": "string",
+              "description": "Tenant where the registration was realized"
+            },
+            "name": {
+              "type": "string",
+              "description": "User name for the app"
+            },
+            "last_name": {
+              "type": "string",
+              "description": "User last name for the app"
+            },
+            "admin": {
+              "type": "string",
+              "description": "If the user registered was an admin or not"
+            },
             "_id": { "type": "string" },
             "__v": { "type": "string" }
           }
         },
         "message": {
-          "type": "string","description":"Simple message informing the result of the transaction"
+          "type": "string",
+          "description": "Simple message informing the result of the transaction"
         }
       }
     }

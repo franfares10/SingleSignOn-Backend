@@ -2,6 +2,7 @@ const ClaimService = require("../services/claims.service");
 const { VALID_TENANTS } = require("../constants/constants");
 const jwt = require("jsonwebtoken");
 
+//Crea un nuevo claim dentro del tenant especifico que nos llega con el jwt.
 const createNewUserClaim = async function (req, res) {
   const { jwtToken, claim } = req.body;
   try {
@@ -88,10 +89,29 @@ const deleteTrazaClaimUser = async function (req, res) {
 const isValidTenant = (tenant) =>
   VALID_TENANTS.includes(tenant) ? true : false;
 
+const fetchAllClaims = async (req, res) => {
+  try {
+    console.log(req.body);
+    const { tenant, jwtToken } = req.body;
+    const validateReturn = await ClaimService.validateJwt(jwtToken);
+    if (!validateReturn) {
+      return res.status(401).json({ message: "JWT TOKEN IS NOT VALID " });
+    }
+    const result = await ClaimService.fecthAllClaims(tenant);
+    return res.status(200).json(result);
+  } catch (e) {
+    console.log(e);
+    res
+      .status(400)
+      .json({ message: "You cant fetch all the claims in this moment" });
+  }
+};
+
 module.exports = {
   createNewUserClaim,
   deleteClaimFromTenant,
   createTrazaClaimUser,
   isValidTenant,
   deleteTrazaClaimUser,
+  fetchAllClaims,
 };

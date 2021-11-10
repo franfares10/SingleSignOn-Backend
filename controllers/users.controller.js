@@ -77,8 +77,9 @@ const registerUser = async function (req, res) {
 };
 
 const deleteUser = async function (req, res) {
-  const { email, tenant } = req.body;
+  const { user, jwtToken } = req.body;
 
+  //add validat jwt
   const User = {
     email,
     tenant,
@@ -91,13 +92,11 @@ const deleteUser = async function (req, res) {
         .status(204)
         .json({ status: 204, message: "Succesfully Deleted User" });
     } else {
-      return res
-        .status(400)
-        .json({
-          status: 400,
-          user: User,
-          message: "Unsuccessfully Deleted User",
-        });
+      return res.status(400).json({
+        status: 400,
+        user: User,
+        message: "Unsuccessfully Deleted User",
+      });
     }
   } catch (e) {
     //Return an Error Response Message with Code and the Error Message.

@@ -6,12 +6,17 @@ const {
   deleteClaimFromTenant,
   createTrazaClaimUser,
   deleteTrazaClaimUser,
+  fetchAllClaims
 } = require("../controllers/claims.controller");
-const { deleteClaimsForUser } = require("../services/claims.service");
 const router = Router();
+router.post(
+  "/all",
+  [check("tenant").not().isEmpty(), check("jwtToken").not().isEmpty()],
+  fetchAllClaims
+);
 router.delete(
   "/claim",
-  [ 
+  [
     check("user").not().isEmpty(),
     check("claim").not().isEmpty(),
     check("jwtToken").not().isEmpty(),
@@ -32,17 +37,13 @@ router.post(
   [
     check("tenant").not().isEmpty(),
     check("claim").not().isEmpty(),
-    check("jwtPayload").not().isEmpty(),
     check("jwtToken").not().isEmpty(),
   ],
   createNewUserClaim
 );
 router.delete(
   "/revoke",
-  [
-    check("claim").not().isEmpty(),
-    check("jwtToken").not().isEmpty(),
-  ],
+  [check("claim").not().isEmpty(), check("jwtToken").not().isEmpty()],
   deleteClaimFromTenant
 );
 
