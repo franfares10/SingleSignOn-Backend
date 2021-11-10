@@ -158,6 +158,48 @@
         }
       }
     },
+    "/claims/initialize": {
+      "post": {
+        "tags": ["Inicializar un nuevo claim en el tenant correspondiente"],
+        "summary": "Inicializar un nuevo claim en el tenant correspondiente",
+        "description": "A status 200 with a JWT will be returned when this endpoint is called",
+        "operationId": "externalLogin",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "InitializeRequest",
+            "description": "Initialize request",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "claim": { "type": "string" },
+                "jwtToken": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "type": "object",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorBusiness"
+            }
+          }
+        }
+      }
+    },
     "/claims/all": {
       "post": {
         "tags": ["Post para obtener todos los claims de un tenan"],
