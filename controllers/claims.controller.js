@@ -5,8 +5,9 @@ const jwt = require("jsonwebtoken");
 //Crea un nuevo claim dentro del tenant especifico que nos llega con el jwt.
 const createNewUserClaim = async function (req, res) {
   const { jwtToken, claim } = req.body;
+  const retornoValidate = await ClaimService.validateJwt(jwtToken);
   try {
-    if (!ClaimService.validateJwt(jwtToken)) {
+    if (!retornoValidate) {
       return res.status(401).json({ message: "XX - The token was corrupted." });
     }
     const { tenant } = jwt.decode(jwtToken);
@@ -28,8 +29,9 @@ const createNewUserClaim = async function (req, res) {
 
 const deleteClaimFromTenant = async function (req, res) {
   const { jwtToken, claim } = req.body;
+  const retornoValidate = await ClaimService.validateJwt(jwtToken);
   try {
-    if (!ClaimService.validateJwt(jwtToken)) {
+    if (!retornoValidate) {
       return res.status(401).json({ message: "XX - The token was corrupted." });
     }
     const { tenant } = jwt.decode(jwtToken);

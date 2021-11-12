@@ -37,11 +37,12 @@ router.post(
   ],
   registerUser
 );
-router.post(
+router.delete(
   "/delete",
   [
     check("email").not().isEmpty(),
     check("tenant").not().isEmpty(),
+    check("jwtToken").not().isEmpty(),
     validarCampos,
   ],
   deleteUser

@@ -182,16 +182,49 @@
           }
         ],
         "responses": {
-          "200": {
-            "type": "object",
+          "201": {
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "string"
             }
           },
           "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorBusiness"
+            }
+          }
+        }
+      }
+    },
+    "/users/delete": {
+      "delete": {
+        "tags":["Eliminar un usuario a partir del tenant especifico"],
+        "summary":"Endpoint para eliminar usuario",
+        "consumes":["application/json"],
+        "produces":["application/json"],
+        "parameters":[{
+          "in":"body",
+          "name":"DeleteUserRequest",
+          "required":true,
+          "description":"Endpoint that returns if the user was succesfully deleted or not.",
+          "schema":{
+            "type":"object",
+          "properties":{
+            "email":{
+              "type":"string"
+            },
+            "tenant":{
+              "type":"string"
+            },
+            "jwtToken":{
+              "type":"string"
+            }
+          }
+        }
+        }],
+        "responses":{
+          "204":{},
+          "401":{
             "description": "Unauthorized",
             "schema": {
               "$ref": "#/definitions/ErrorBusiness"

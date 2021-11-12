@@ -1,9 +1,11 @@
 const fs = require("fs");
 const TenantService = require("../services/tenant.service");
 const CredentialService = require("../services/credential.service");
+const ClaimService = require("../services/claims.service");
 const jwt = require("jsonwebtoken");
 const UserService = require("../services/user.service");
 const { VALID_TENANTS } = require("../constants/constants");
+const Claims = require("../models/Claims.model");
 
 const PRIVATE_KEY = process.env.PRIVATE_SECRET_SSH;
 //Metodo para realizar el login desde el endpoint
@@ -77,8 +79,10 @@ const registerUser = async function (req, res) {
 };
 
 const deleteUser = async function (req, res) {
-  const { user, jwtToken } = req.body;
-
+  const { email, tenant, jwtToken } = req.body;
+  if (!ClaimService.validateJwt(jwtToken)) {
+    return res.status(401).json({message:"XX - The JWT Token is not valid."})
+  }
   //add validat jwt
   const User = {
     email,
@@ -88,9 +92,7 @@ const deleteUser = async function (req, res) {
   try {
     var isDelete = await UserService.deleteUser(User);
     if (isDelete) {
-      return res
-        .status(204)
-        .json({ status: 204, message: "Succesfully Deleted User" });
+      return res.status(204).send();
     } else {
       return res.status(400).json({
         status: 400,
