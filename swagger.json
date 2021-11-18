@@ -160,7 +160,7 @@
     },
     "/claims/initialize": {
       "post": {
-        "tags": ["Inicializar un nuevo claim en el tenant correspondiente"],
+        "tags": ["Inicializar un nuevo claim en el tenant correspondiente, es decir, el tenant al cual pertenece el usuario admin con ese jwt"],
         "summary": "Inicializar un nuevo claim en el tenant correspondiente",
         "description": "A status 200 with a JWT will be returned when this endpoint is called",
         "operationId": "externalLogin",

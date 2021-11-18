@@ -32,8 +32,7 @@ router.post(
     check("tenant").not().isEmpty(),
     check("name").not().isEmpty(),
     check("last_name").not().isEmpty(),
-    check("admin").not().isEmpty(),
-    validarCampos,
+    validarCampos
   ],
   registerUser
 );

@@ -55,6 +55,8 @@ const getUser = async function(email,tenant){
 }
 
 
+// FALTA CHECKEAR QUE EL JWT SEA DE UN USUARIO ADMIN
+
 const deleteUser = async function (user) {
 
     try {
