@@ -5,6 +5,7 @@ var UserSchema = new mongoose.Schema({
     tenant: String,
     name: String,
     last_name: String,
+    admin:Boolean,
     claims: [Object]
 })
 

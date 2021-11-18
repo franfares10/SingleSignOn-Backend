@@ -50,14 +50,15 @@ const externalLogin = async function (req, res) {
 };
 
 const registerUser = async function (req, res) {
-  const { email, password, tenant, name, last_name } = req.body;
+  const { email, password, tenant, name, last_name ,admin} = req.body;
 
   const User = {
     email,
     password,
     tenant,
     name,
-    last_name
+    last_name,
+    admin
   };
 
   try {
