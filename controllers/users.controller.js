@@ -50,7 +50,7 @@ const externalLogin = async function (req, res) {
 };
 
 const registerUser = async function (req, res) {
-  const { email, password, tenant, name, last_name ,admin} = req.body;
+  const { email, password, tenant, name, last_name, admin } = req.body;
 
   const User = {
     email,
@@ -58,7 +58,7 @@ const registerUser = async function (req, res) {
     tenant,
     name,
     last_name,
-    admin
+    admin,
   };
 
   try {
@@ -80,9 +80,6 @@ const registerUser = async function (req, res) {
 
 const deleteUser = async function (req, res) {
   const { email, tenant, jwtToken } = req.body;
-  if (!ClaimService.validateJwt(jwtToken)) {
-    return res.status(401).json({message:"XX - The JWT Token is not valid."})
-  }
   //add validat jwt
   const User = {
     email,
@@ -90,6 +87,12 @@ const deleteUser = async function (req, res) {
   };
 
   try {
+    const retorno = await ClaimService.validateJwt(jwtToken);
+    if (!retorno) {
+      return res
+        .status(401)
+        .json({ message: "XX - The JWT Token is not valid." });
+    }
     var isDelete = await UserService.deleteUser(User);
     if (isDelete) {
       return res.status(204).send();
