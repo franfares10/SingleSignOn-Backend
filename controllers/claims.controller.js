@@ -28,15 +28,15 @@ const createNewUserClaim = async function (req, res) {
     4288-1796 / 
     5088-9110*/
   } catch (e) {
-    return res.status(400).json({message:e.message});
+    return res.status(400).json({ message: e.message });
   }
 };
 
 const deleteClaimFromTenant = async function (req, res) {
   const { jwtToken, claim } = req.body;
   console.log("XX - Hasta aca llego");
-  const retornoValidate = await ClaimService.validateJwt(jwtToken);
   try {
+    const retornoValidate = await ClaimService.validateJwt(jwtToken);
     if (!retornoValidate) {
       return res.status(401).json({ message: "XX - The token was corrupted." });
     }
@@ -53,48 +53,54 @@ const deleteClaimFromTenant = async function (req, res) {
     }
     return res.status(204).send();
   } catch (e) {
-    console.error("aca: " + e);
-    return res.status(400).send("You cant perform this operation right now");
+    return res.status(400).json({ message: e.message });
   }
 };
 
 const createTrazaClaimUser = async function (req, res) {
   //Crea un claim en el objeto del usuario, con su respectivo valor.
   const { claim, jwtToken, user } = req.body;
-  const retornoValidate = await ClaimService.validateJwt(jwtToken);
-  if (!retornoValidate) {
-    return res
-      .status(401)
-      .json({ message: "JWT Token was corrupted, try again later." });
-  }
+  try {
+    const retornoValidate = await ClaimService.validateJwt(jwtToken);
+    if (!retornoValidate) {
+      return res
+        .status(401)
+        .json({ message: "JWT Token was corrupted, try again later." });
+    }
 
-  const result = await ClaimService.claimsForUser(user, claim);
+    const result = await ClaimService.claimsForUser(user, claim);
 
-  if (!result) {
-    return res
-      .status(400)
-      .json({ message: "You cant perform this update right now." });
+    if (!result) {
+      return res
+        .status(400)
+        .json({ message: "You cant perform this update right now." });
+    }
+    return res.status(204).send();
+  } catch (e) {
+    return res.status(400).json({ message: e.message });
   }
-  return res.status(204).send();
 };
 const deleteTrazaClaimUser = async function (req, res) {
   const { claim, jwtToken, user } = req.body;
-  console.log("XX - ACA");
-  const retornoValidate = await ClaimService.validateJwt(jwtToken);
-  if (!retornoValidate) {
-    return res
-      .status(401)
-      .json({ message: "JWT Token was corrupted, try again later." });
-  }
+  try {
+    const retornoValidate = await ClaimService.validateJwt(jwtToken);
+    if (!retornoValidate) {
+      return res
+        .status(401)
+        .json({ message: "JWT Token was corrupted, try again later." });
+    }
 
-  const result = await ClaimService.deleteClaimsForUser(user, claim);
+    const result = await ClaimService.deleteClaimsForUser(user, claim);
 
-  if (!result) {
-    return res
-      .status(400)
-      .json({ message: "You cant perform this delete right now." });
+    if (!result) {
+      return res
+        .status(400)
+        .json({ message: "You cant perform this delete right now." });
+    }
+    return res.status(204).send();
+  } catch (e) {
+    return res.status(400).json({message:e.message})
   }
-  return res.status(204).send();
 };
 const isValidTenant = (tenant) =>
   VALID_TENANTS.includes(tenant) ? true : false;
@@ -115,9 +121,7 @@ const fetchAllClaims = async (req, res) => {
     const result = await ClaimService.fecthAllClaims(tenant);
     return res.status(200).json(result);
   } catch (e) {
-    res
-      .status(400)
-      .json({ message: "XX - You cant fetch all the claims in this moment" });
+    res.status(400).json({ message: e.message });
   }
 };
 
