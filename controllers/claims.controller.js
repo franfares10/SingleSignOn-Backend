@@ -5,30 +5,36 @@ const jwt = require("jsonwebtoken");
 //Crea un nuevo claim dentro del tenant especifico que nos llega con el jwt.
 const createNewUserClaim = async function (req, res) {
   const { jwtToken, claim } = req.body;
-  const retornoValidate = await ClaimService.validateJwt(jwtToken);
   try {
+    const retornoValidate = await ClaimService.validateJwt(jwtToken);
     if (!retornoValidate) {
       return res.status(401).json({ message: "XX - The token was corrupted." });
     }
     const { tenant } = jwt.decode(jwtToken);
     var result = await ClaimService.createNewClaim(tenant, claim.toUpperCase());
-    if (!result) {
-      return res.status(400).json({
-        message:
-          "XX - The request could not be processed, you are probably trying to add an existing claim",
-      });
+    switch (result) {
+      case true:
+        return res.status(201).json({
+          message: "The claim " + claim + " has been created",
+        });
+      case false:
+        return res.status(400).json({
+          message:
+            "XX - The request could not be processed, you are probably trying to add an existing claim",
+        });
     }
-    return res.status(201).json({
-      message: "The claim " + claim + " has been created",
-    });
+
+    /* 4248-7474
+    4288-1796 / 
+    5088-9110*/
   } catch (e) {
-    console.error(e);
-    return res.status(400).send("You cant perform this operation right now");
+    return res.status(400).json({message:e.message});
   }
 };
 
 const deleteClaimFromTenant = async function (req, res) {
   const { jwtToken, claim } = req.body;
+  console.log("XX - Hasta aca llego");
   const retornoValidate = await ClaimService.validateJwt(jwtToken);
   try {
     if (!retornoValidate) {
@@ -39,6 +45,7 @@ const deleteClaimFromTenant = async function (req, res) {
       tenant,
       claim.toUpperCase()
     );
+    console.log(result);
     if (!result) {
       return res
         .status(401)
@@ -46,7 +53,7 @@ const deleteClaimFromTenant = async function (req, res) {
     }
     return res.status(204).send();
   } catch (e) {
-    console.error(e);
+    console.error("aca: " + e);
     return res.status(400).send("You cant perform this operation right now");
   }
 };
@@ -72,6 +79,7 @@ const createTrazaClaimUser = async function (req, res) {
 };
 const deleteTrazaClaimUser = async function (req, res) {
   const { claim, jwtToken, user } = req.body;
+  console.log("XX - ACA");
   const retornoValidate = await ClaimService.validateJwt(jwtToken);
   if (!retornoValidate) {
     return res
@@ -100,11 +108,9 @@ const fetchAllClaims = async (req, res) => {
     if (!validateReturn) {
       return res.status(401).json({ message: "JWT TOKEN IS NOT VALID " });
     } else if (tenantIncoming != tenant) {
-      return res
-        .status(400)
-        .json({
-          message: "XX - No podes ver otros claims que no sean de tu tenant",
-        });
+      return res.status(400).json({
+        message: "XX - No podes ver otros claims que no sean de tu tenant",
+      });
     }
     const result = await ClaimService.fecthAllClaims(tenant);
     return res.status(200).json(result);
