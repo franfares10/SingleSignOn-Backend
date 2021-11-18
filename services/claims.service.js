@@ -26,7 +26,7 @@ const validateJwt = async function (jwtToken) {
       throw new Error("XX - El usuario en cuestión no es admin");
     }
     return true;
-    //Preguntarle al profe el tema de si le sacan un permiso una vez otorgado el token
+    
   } catch (e) {
     console.log("XX - Error validating JWT Token" + e);
     return false;
