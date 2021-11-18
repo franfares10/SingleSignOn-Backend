@@ -23,10 +23,6 @@ const createNewUserClaim = async function (req, res) {
             "XX - The request could not be processed, you are probably trying to add an existing claim",
         });
     }
-
-    /* 4248-7474
-    4288-1796 / 
-    5088-9110*/
   } catch (e) {
     return res.status(400).json({ message: e.message });
   }
