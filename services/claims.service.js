@@ -1,15 +1,8 @@
-const Claims = require("../models/Claims.model");
-const { getUser } = require("../services/user.service");
-const bcrypt = require("bcryptjs");
-const { SALT } = require("../constants/constants");
-const Credentials = require("../models/Credentials.model");
-const CredentialService = require("./credential.service");
-const jwt = require("jsonwebtoken");
 const Tenant = require("../models/Tenant.model");
-const TenantService = require("./tenant.service");
+const { getUser } = require("../services/user.service");
+const jwt = require("jsonwebtoken");
 const Users = require("../models/User.model");
 const { VALID_TENANTS } = require("../constants/constants");
-const fs = require("fs");
 
 const validateJwt = async function (jwtToken) {
   //Me podrían pasar el tenant para que yo tome la info de que hashear y listo.
@@ -24,6 +17,7 @@ const validateJwt = async function (jwtToken) {
     }
     var isUserAdmin = false;
     claims.forEach((e) => {
+      console.log(e);
       if (Object.keys(e)[0] === "ADMIN" && Object.values(e)[0] === true) {
         isUserAdmin = true;
       }
@@ -39,20 +33,22 @@ const validateJwt = async function (jwtToken) {
   }
 };
 const fecthAllClaims = async (tenant) => {
-  const result = await Claims.findOne({ tenant: tenant }).select('claims -_id');
+  const result = await Tenant.findOne({ name: tenant }).select('claims -_id');
   return result;
 };
 const createNewClaim = async function (tenant, claim) {
   //El parametro del jwtPayload, sería el token.
-  var saveUser = { tenant, claims: [claim], lastUpdate: Date.now() };
+  var saveUser = { tenant, claims: [claim]};
   try {
-    var oldVersion = await Claims.findOne({ tenant: tenant }); //,{$addToSet:[claim],lastUpdate: Date.now()},{new:true});
-    if (!oldVersion) {
+    var oldVersion = await Tenant.findOne({ name: tenant }); //,{$addToSet:[claim],lastUpdate: Date.now()},{new:true});
+    //TODO BORRAR ESTE METODO
+    /*if (!oldVersion) {
+      //Esta validación estaría demás porque en Tenants están creados siempre.
       console.log("XX - Creo nuevos claims");
-      var dbObject = new Claims(saveUser);
+      var dbObject = new Tenant(saveUser);
       var result = await dbObject.save();
       return true;
-    }
+    }*/
     var listaClaims = JSON.parse(JSON.stringify(oldVersion)).claims;
     if (listaClaims.includes(claim)) {
       console.log("XX - You cant add an existing claim");
@@ -60,9 +56,9 @@ const createNewClaim = async function (tenant, claim) {
     }
     listaClaims.push(claim.toUpperCase());
     console.log("XX - Actualizó existentes");
-    await Claims.updateOne(
-      { tenant: tenant },
-      { claims: listaClaims, lastUpdate: Date.now() },
+    await Tenant.updateOne(
+      { name: tenant },
+      { claims: listaClaims },
       { new: true }
     );
     return true;
@@ -73,7 +69,7 @@ const createNewClaim = async function (tenant, claim) {
 };
 const deleteExistingClaim = async function (tenant, claim) {
   try {
-    var oldVersion = await Claims.findOne({ tenant: tenant }); //,{$addToSet:[claim],lastUpdate: Date.now()},{new:true});
+    var oldVersion = await Tenant.findOne({ name: tenant }); //,{$addToSet:[claim],lastUpdate: Date.now()},{new:true});
     if (!oldVersion) {
       return false;
     }
@@ -86,9 +82,9 @@ const deleteExistingClaim = async function (tenant, claim) {
         listaNueva.push(claimIncoming);
       }
     });
-    await Claims.updateOne(
-      { tenant: tenant },
-      { claims: listaNueva, lastUpdate: Date.now() },
+    await Tenant.updateOne(
+      { name: tenant },
+      { claims: listaNueva},
       { new: true }
     );
     return true;
@@ -99,7 +95,7 @@ const deleteExistingClaim = async function (tenant, claim) {
 };
 const checkValidClaim = async (user, claimIncoming) => {
   try {
-    var claimsExisting = await Claims.findOne({ tenant: user.tenant });
+    var claimsExisting = await Tenant.findOne({ name: user.tenant });
     if (!claimsExisting) {
       return false;
     }

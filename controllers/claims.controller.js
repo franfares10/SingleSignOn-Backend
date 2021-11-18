@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 //Crea un nuevo claim dentro del tenant especifico que nos llega con el jwt.
 const createNewUserClaim = async function (req, res) {
   const { jwtToken, claim } = req.body;
-  const retornoValidate = await ClaimService.validateJwt(jwtToken);
+  //const retornoValidate = await ClaimService.validateJwt(jwtToken);
   try {
     if (!retornoValidate) {
       return res.status(401).json({ message: "XX - The token was corrupted." });
@@ -29,11 +29,11 @@ const createNewUserClaim = async function (req, res) {
 
 const deleteClaimFromTenant = async function (req, res) {
   const { jwtToken, claim } = req.body;
-  const retornoValidate = await ClaimService.validateJwt(jwtToken);
+  //const retornoValidate = await ClaimService.validateJwt(jwtToken);
   try {
-    if (!retornoValidate) {
-      return res.status(401).json({ message: "XX - The token was corrupted." });
-    }
+    //if (!retornoValidate) {
+      //return res.status(401).json({ message: "XX - The token was corrupted." });
+    //}
     const { tenant } = jwt.decode(jwtToken);
     var result = await ClaimService.deleteExistingClaim(
       tenant,
@@ -93,19 +93,25 @@ const isValidTenant = (tenant) =>
 
 const fetchAllClaims = async (req, res) => {
   try {
-    console.log(req.body);
+    //Fixear que solo traiga los del tenant en especifico
     const { tenant, jwtToken } = req.body;
     const validateReturn = await ClaimService.validateJwt(jwtToken);
+    const tenantIncoming = await jwt.decode(jwtToken).tenant;
     if (!validateReturn) {
       return res.status(401).json({ message: "JWT TOKEN IS NOT VALID " });
+    } else if (tenantIncoming != tenant) {
+      return res
+        .status(400)
+        .json({
+          message: "XX - No podes ver otros claims que no sean de tu tenant",
+        });
     }
     const result = await ClaimService.fecthAllClaims(tenant);
     return res.status(200).json(result);
   } catch (e) {
-    console.log(e);
     res
       .status(400)
-      .json({ message: "You cant fetch all the claims in this moment" });
+      .json({ message: "XX - You cant fetch all the claims in this moment" });
   }
 };
 

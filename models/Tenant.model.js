@@ -6,7 +6,8 @@ var TenantSchema = new mongoose.Schema({
     redirect: {
         type: String,
         required: false
-    }
+    },
+    claims:[String]
 })
 
 var Tenant = mongoose.model('tenant', TenantSchema, 'tenants');
