@@ -92,7 +92,7 @@ const deleteUser = async function (req, res) {
         .status(401)
         .json({ message: "XX - The JWT Token is not valid." });
     }
-    var isDelete = await UserService.deleteUser(User);
+    var isDelete = await UserService.deleteUser(User,jwtToken);
     if (isDelete) {
       return res.status(204).send();
     } else {

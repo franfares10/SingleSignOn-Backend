@@ -2,6 +2,7 @@ var Credentials = require('../models/Credentials.model');
 var Tenant = require('../models/Tenant.model');
 const Users = require('../models/User.model');
 var bcrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken");
 const { SALT } = require('../constants/constants');
 
 
@@ -57,10 +58,16 @@ const getUser = async function(email,tenant){
 
 // FALTA CHECKEAR QUE EL JWT SEA DE UN USUARIO ADMIN
 
-const deleteUser = async function (user) {
+const deleteUser = async function (user,jwtToken) {
 
     try {
         var operation = false;
+        const {tenant} = jwt.decode(jwtToken)
+        
+        if(user.tenant!=tenant){
+            console.log("XX - No se puede borrar el usuario, por falta de admin en ese tenant")
+            throw new Error("XX - Solo podes eliminar usuarios de los tenants que vos seas admin")
+        }
         var isRegistered = await isUserRegistered(user.email, user.tenant);
 
         if(isRegistered){
