@@ -5,7 +5,6 @@ const ClaimService = require("../services/claims.service");
 const jwt = require("jsonwebtoken");
 const UserService = require("../services/user.service");
 const { VALID_TENANTS } = require("../constants/constants");
-const Claims = require("../models/Claims.model");
 
 const PRIVATE_KEY = process.env.PRIVATE_SECRET_SSH;
 //Metodo para realizar el login desde el endpoint
